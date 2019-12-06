@@ -79,7 +79,6 @@ const useStyles = makeStyles((theme: Theme) =>
       position: "absolute",
       top: "5px",
       right: "5px",
-      zIndex: 10000,
       color: "#fff",
       backgroundColor: "#666769",
       width: "24px",
@@ -354,6 +353,7 @@ const Setting = (props: any) => {
               <CloseIcon
                 onClick={() => {
                   setImage();
+                  setImages([])
                 }}
                 classes={{ root: classes.customDelete }}
               />
@@ -368,6 +368,7 @@ const Setting = (props: any) => {
             dropzoneClass={classes.dropzoneContainer}
             showPreviewsInDropzone={false}
             dropzoneParagraphClass={classes.dropzoneText}
+            // maxFileSize={} bit
           />
         )}
       </div>
