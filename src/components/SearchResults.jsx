@@ -9,7 +9,7 @@ const useStyles = makeStyles(theme =>
     root: {
       flexGrow: 1,
       overflowX: "hidden",
-      overflowY: "scroll",
+      overflowY: "auto",
       padding: "80px 60px",
       display: "flex",
       flexDirection: "column",

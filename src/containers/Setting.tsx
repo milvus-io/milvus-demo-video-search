@@ -18,11 +18,11 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "flex",
       flexDirection: "column",
       minWidth: "400px",
-      height: "100%",
       padding: "60px 20px",
       borderWidth: "1px",
       backgroundColor: "#1F2023",
-      color: "#E4E4E6"
+      color: "#E4E4E6",
+      overflowY: "auto"
     },
     header: {
       marginBottom: "30px",
@@ -153,9 +153,7 @@ const Setting = (props: any) => {
   const { process, train, count, search, clearAll } = useContext(queryContext);
   const { setImages, loading, setLoading } = props;
   const classes = useStyles({});
-  const [inputs, setInputs]: any = useState(
-    "/home/zilliz_support/workspace/lcl/milvus_demo/web_test/pic2"
-  );
+  const [inputs, setInputs]: any = useState("");
   const [topK, setTopK]: any = useState(5);
   const [totalNum, setTotalNum]: any = useState(0);
   const [[current, total], setProcessedNum]: any = useState([0, 0]);
@@ -215,16 +213,18 @@ const Setting = (props: any) => {
           .split(",")
           .map((item: any) => Number.parseInt(item.split(":")[1]));
         setProcessedNum([_current, _total]);
-        if (current !== total) {
+        if (_current !== _total) {
           _keepProcess();
         } else {
-          count().then((res: any) => {
-            const { data, status } = res;
-            if (status === 200) {
-              setTotalNum(data);
-              setLoading(false);
-            }
-          });
+          setTimeout(() => {
+            count().then((res: any) => {
+              const { data, status } = res;
+              if (status === 200) {
+                setTotalNum(data);
+                setLoading(false);
+              }
+            });
+          }, 3000);
         }
       }
     });
@@ -232,9 +232,11 @@ const Setting = (props: any) => {
   const uploadImgPath = () => {
     train({ File: inputs }).then((res: any) => {
       if (res.status === 200) {
-        setInputs("");
         setLoading(true);
-        _keepProcess();
+        setTimeout(() => {
+          setInputs("");
+          _keepProcess();
+        }, 1000);
       }
     });
   };
@@ -242,6 +244,7 @@ const Setting = (props: any) => {
   const clear = () => {
     clearAll().then((res: any) => {
       if (res.status === 200) {
+        setProcessedNum([0, 0]);
         setTotalNum(0);
         setImage();
         setImages([]);
@@ -353,7 +356,7 @@ const Setting = (props: any) => {
               <CloseIcon
                 onClick={() => {
                   setImage();
-                  setImages([])
+                  setImages([]);
                 }}
                 classes={{ root: classes.customDelete }}
               />

@@ -31,26 +31,29 @@ const useStyles = makeStyles(theme =>
       position: "absolute",
       top: `0`,
       bottom: `0`,
-      margin:'auto',
+      margin: "auto",
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
       color: "#60606F",
-      fontSize: "8rem"
+      fontSize: "8vw"
     },
     distant: {
-      paddingLeft: "20px",
-      fontSize: "15px",
+      fontSize: "1vw",
       zIndex: 1000,
       color: "#fafafa",
       backgroundColor: "#000",
       position: "absolute",
       bottom: "0px",
       left: "0px",
-      width: "calc(100% - 20px)",
+      width: "100%",
       height: "24px",
       display: "flex",
-      alignItems: "center"
+      justifyContent: "center",
+      alignItems: "center",
+      overflowX: "hidden",
+      textOverflow: "ellipsis",
+      whiteSpace: "nowrap"
     }
   })
 );
@@ -88,7 +91,9 @@ const Gallary = (props: any) => {
                 }}
               >
                 <img src={src} className={classes.child} alt="" />
-                {isHovered && <p className={classes.distant}>{distance}</p>}
+                {isHovered && (
+                  <p className={classes.distant}>{distance.toFixed(6)}</p>
+                )}
               </div>
             );
           })
