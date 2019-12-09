@@ -214,7 +214,7 @@ const Setting = (props: any) => {
           .map((item: any) => Number.parseInt(item.split(":")[1]));
         setProcessedNum([_current, _total]);
         if (_current !== _total) {
-          _keepProcess();
+          setTimeout(() => _keepProcess(), 1000);
         } else {
           setTimeout(() => {
             count().then((res: any) => {
@@ -260,7 +260,7 @@ const Setting = (props: any) => {
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [current]);
+  }, []);
 
   return (
     <div className={classes.setting}>
