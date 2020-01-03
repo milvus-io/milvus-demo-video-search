@@ -46,7 +46,10 @@ const Result = props => {
       color: "#fff"
     },
     formula: {
-      width: "70%"
+      width: "70%",
+      wordWrap: "break-word",
+      wordBreak: "break-all",
+      padding: "0 30px 0 0"
     },
     distance: {
       width: "30%"
