@@ -1,28 +1,26 @@
 import React, { useState } from "react";
-import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import QueryProvider from "./contexts/QueryContext";
 import Setting from "./containers/Setting";
-import SearchResults from "./components/SearchResults";
+import SearchResults from "./components/ChemistryResults";
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      flexGrow: 1,
-      display: "flex",
-      overflow: "hidden"
-    }
-  })
-);
+const useStyles = makeStyles({
+  root: {
+    flexGrow: 1,
+    display: "flex",
+    overflow: "hidden"
+  }
+});
 
 const App: React.FC = () => {
   const classes = useStyles({});
-  const [images, setImages]: any = useState([]);
+  const [results, setResults]: any = useState([]);
   const [loading, setLoading]: any = useState(false);
   return (
     <QueryProvider>
       <div className={classes.root}>
-        <Setting setImages={setImages} setLoading={setLoading} />
-        <SearchResults images={images} />
+        <Setting setResults={setResults} setLoading={setLoading} />
+        <SearchResults results={results} />
         {loading && (
           <div
             style={{

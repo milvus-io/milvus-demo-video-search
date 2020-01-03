@@ -3,16 +3,15 @@ declare global {
     _env_: any;
   }
 }
-let endpoint = `http://192.168.1.85:5000`;
+let endpoint = `http://192.168.1.58:5000`;
 if (window._env_ && window._env_.API_URL) {
   endpoint = window._env_.API_URL;
 }
 
-export const Train = `${endpoint}/api/v1/train`;
-export const Processing = `${endpoint}/api/v1/process`;
-export const Count = `${endpoint}/api/v1/count`;
-export const ClearAll = `${endpoint}/api/v1/delete`;
-export const Search = `${endpoint}/api/v1/search`;
+export const LOAD = `${endpoint}/api/v1/load`;
+export const PROCESSING = `${endpoint}/api/v1/process`;
+export const COUNT = `${endpoint}/api/v1/count`;
+export const CLEAR_ALL = `${endpoint}/api/v1/delete`;
+export const SEARCH = `${endpoint}/api/v1/search`;
 
-export const PATH_IMAGE = `${endpoint}/home/zilliz_support/workspace/lcl/milvus_demo/web_test/pic1`;
-export const PATH_IMAGE2 = `${endpoint}/home/zilliz_support/workspace/lcl/milvus_demo/web_test/pic2`;
+export const PATH_IMAGE = `${endpoint}/data/workspace/apptec/demo/test_100.smi`;

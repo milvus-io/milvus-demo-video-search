@@ -11,36 +11,36 @@ const QueryProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const errorParser = (e: any) => {
     console.log(e);
   };
+  const load = async (params: any) => {
+    const url = URL.LOAD;
+    return await axiosInstance.post(url, params).catch(errorParser);
+  };
   const process = async (params: any) => {
-    const url = URL.Processing;
+    const url = URL.PROCESSING;
     return await axiosInstance.get(url, params).catch(errorParser);
   };
   const count = async (params: any) => {
-    const url = URL.Count;
-    return await axiosInstance.post(url, params).catch(errorParser);
-  };
-  const train = async (params: any) => {
-    const url = URL.Train;
+    const url = URL.COUNT;
     return await axiosInstance.post(url, params).catch(errorParser);
   };
 
   const search = async (params: any) => {
-    const url = URL.Search;
+    const url = URL.SEARCH;
     return await axiosInstance.post(url, params).catch(errorParser);
   };
   const clearAll = async () => {
-    const url = URL.ClearAll;
+    const url = URL.CLEAR_ALL;
     return await axiosInstance.post(url).catch(errorParser);
   };
 
   return (
     <Provider
       value={{
+        load,
         process,
         count,
         search,
-        clearAll,
-        train
+        clearAll
       }}
     >
       {children}
