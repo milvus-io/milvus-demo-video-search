@@ -25,7 +25,7 @@ const QueryProvider: FC<{ children: ReactNode }> = ({ children }) => {
   };
 
   const search = async (params: any) => {
-    const url = URL.SEARCH;
+    const url = `${URL.SEARCH}?${Math.ceil(Math.random()*10000).toString()}`;
     return await axiosInstance.post(url, params).catch(errorParser);
   };
   const clearAll = async () => {
