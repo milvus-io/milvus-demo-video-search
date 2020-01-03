@@ -15,7 +15,7 @@ const ResultHeader = props => {
       flex: "0 0 21%",
       paddingTop: "4%",
       display: "flex",
-      justifyContent: "center",
+      justifyContent: "start",
       alignItems: "center",
       marginRight: "20px"
     },
@@ -27,7 +27,8 @@ const ResultHeader = props => {
       bottom: `0`,
       margin: "auto",
       display: "flex",
-      justifyContent: "center",
+      justifyContent: "start",
+      paddingLeft:'10px',
       alignItems: "center",
       color: "#fff",
       fontSize: "1vw",
@@ -39,13 +40,16 @@ const ResultHeader = props => {
       justifyContent: "start",
       alignItems: "center",
       fontSize: "1vw",
-      color: "#fff"
+      color: "#fff",
     },
     formula: {
-      width: "70%"
+      width: "70%",
+      textAlign: "left"
     },
     distance: {
-      width: "30%"
+      width: "30%",
+      textAlign: "left"
+
     }
   });
   const classes = useStyles({});

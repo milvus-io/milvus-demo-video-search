@@ -53,10 +53,14 @@ const useStyles = makeStyles({
     display: "flex",
     justifyContent: "start",
     alignItems: "center",
-    marginBottom: "30px"
+    marginBottom: "60px"
+  },
+  MolecularInput: {
+    margin: "0 0 40px 0 !important",
+    color: "blue !important"
   },
   customInput: {
-    margin: "0 20px 20px 0 !important",
+    margin: "0 20px 0 0 !important",
     color: "blue !important"
   },
   customFab: {
@@ -199,7 +203,7 @@ const Setting = (props: any) => {
                 setLoading(false);
               }
             });
-          }, 3000);
+          }, 1000);
         }
       }
     });
@@ -243,7 +247,7 @@ const Setting = (props: any) => {
         <p>Molecular Formula Search</p>
       </div>
       <TextField
-        classes={{ root: classes.customInput }}
+        classes={{ root: classes.MolecularInput }}
         label=""
         variant="outlined"
         value={Molecular || ""}
@@ -259,14 +263,14 @@ const Setting = (props: any) => {
         InputProps={{
           style: {
             textAlign: "left",
-            width: "340px",
+            width: "400px",
             height: "40px"
           },
           classes: {
             notchedOutline: classes.notchedOutline,
             root: classes.formLabel
           },
-          placeholder: "pls input your chemistry",
+          placeholder: "please input your chemistry",
           startAdornment: (
             <InputAdornment position="start">
               <SearchIcon />
@@ -280,10 +284,10 @@ const Setting = (props: any) => {
         }}
       />
       <SeperatLine
-        title={`Config`}
+        title={`CONFIG`}
         end="CLEAR ALL"
         onEndClick={clear}
-        style={{ marginBottom: "20px" }}
+        style={{ marginBottom: "30px" }}
       />
       <div className={classes.imageSet}>
         <div className={classes.counts}>

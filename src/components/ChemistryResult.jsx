@@ -1,8 +1,8 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-
+import ZoomInIcon from "@material-ui/icons/ZoomIn";
 const Result = props => {
-  const { src, Molecular, Distance, style } = props;
+  const { src, Molecular, Distance, style, onClick } = props;
   const useStyles = makeStyles({
     container: {
       width: "100%",
@@ -20,7 +20,8 @@ const Result = props => {
       justifyContent: "center",
       alignItems: "center",
       fontSize: "50px",
-      marginRight: "20px"
+      marginRight: "20px",
+      cursor: "pointer"
     },
     child: {
       width: "100%",
@@ -49,13 +50,19 @@ const Result = props => {
     },
     distance: {
       width: "30%"
+    },
+    icon: {
+      position: "absolute",
+      bottom: "10px",
+      right: "10px"
     }
   });
   const classes = useStyles({});
   return (
     <div className={classes.container}>
       <div className={classes.structure}>
-        <img src={src} className={classes.child} alt="" />
+        <img src={src} className={classes.child} alt="" onClick={onClick} />
+        <ZoomInIcon className={classes.icon} />
       </div>
       <div className={classes.label}>
         <p className={classes.formula}>{Molecular}</p>

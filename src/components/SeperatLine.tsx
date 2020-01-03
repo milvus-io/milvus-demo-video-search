@@ -34,7 +34,7 @@ const SeperatLine = (props: any) => {
           }}
         />
       </div>
-      <p onClick={onEndClick} style={{ color: baseColor }}>
+      <p onClick={onEndClick} style={{ color: baseColor, cursor: "pointer" }}>
         {end}
       </p>
     </div>

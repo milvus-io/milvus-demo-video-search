@@ -67,7 +67,7 @@ const SearchResults = props => {
             <Result
               {...data}
               key={index}
-              onClick={_openLightbox}
+              onClick={() => _openLightbox(index)}
               style={{ backgroundColor: index % 2 ? "#323338" : "#28292e" }}
             />
           );
