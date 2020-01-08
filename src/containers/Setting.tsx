@@ -4,8 +4,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import SearchIcon from "@material-ui/icons/Search";
 import InputAdornment from "@material-ui/core/InputAdornment";
-import Fab from "@material-ui/core/Fab";
-import AddIcon from "@material-ui/icons/Add";
 import Slider from "@material-ui/core/Slider";
 import SeperatLine from "../components/SeperatLine";
 import { baseColor } from "../utils/color";
@@ -147,15 +145,12 @@ const useStyles = makeStyles({
 // /data/workspace/apptec/demo/test_100.smi
 // COc1ccc(cc1)SCCC(=O)NCCNS(=O)(=O)c1cccc(c1)Cl
 const Setting = (props: any) => {
-  const { showNote, load, process, count, search, clearAll } = useContext(
-    queryContext
-  );
-  const { setResults, loading, setLoading } = props;
+  const { showNote, count, search } = useContext(queryContext);
+  const { setResults, loading } = props;
   const classes = useStyles({});
-  const [inputs, setInputs]: any = useState("");
   const [topK, setTopK]: any = useState(5);
   const [totalNum, setTotalNum]: any = useState(0);
-  const [[current, total], setProcessedNum]: any = useState([0, 0]);
+  const [[current, total]]: any = useState([0, 0]);
   const [Molecular, setMolecular]: any = useState();
 
   const setText = loading
@@ -177,61 +172,11 @@ const Setting = (props: any) => {
     const val = e.target.value;
     setMolecular(val);
   };
-  const onInputChange = (e: any) => {
-    const val = e.target.value;
-    setInputs(val);
-  };
-
   const onTopKChange = (e: any, val: any) => {
     setTopK(val);
     if (val && Molecular) {
       delayRunFunc({ topK: val, Molecular }, _search, 300);
     }
-  };
-  const _keepProcess = () => {
-    process().then((res: any) => {
-      const { data, status } = res;
-      if (status === 200) {
-        const [_current, _total] = data
-          .split(",")
-          .map((item: any) => Number.parseInt(item.split(":")[1]));
-        setProcessedNum([_current, _total]);
-        if (_current !== _total) {
-          setTimeout(() => _keepProcess(), 1000);
-        } else {
-          setTimeout(() => {
-            count().then((res: any) => {
-              const { data, status } = res;
-              if (status === 200) {
-                setTotalNum(data);
-                setLoading(false);
-              }
-            });
-          }, 1000);
-        }
-      }
-    });
-  };
-  const _uploadSetPath = () => {
-    load({ File: inputs }).then((res: any) => {
-      if (res.status === 200) {
-        setLoading(true);
-        setTimeout(() => {
-          setInputs("");
-          _keepProcess();
-        }, 1000);
-      }
-    });
-  };
-
-  const clear = () => {
-    clearAll().then((res: any) => {
-      if (res.status === 200) {
-        setProcessedNum([0, 0]);
-        setTotalNum(0);
-        setMolecular();
-      }
-    });
   };
 
   useEffect(() => {
@@ -288,56 +233,11 @@ const Setting = (props: any) => {
           }
         }}
       />
-      <SeperatLine
-        title={`CONFIG`}
-        end="CLEAR ALL"
-        onEndClick={clear}
-        style={{ marginBottom: "30px" }}
-      />
+      <SeperatLine title={`CONFIG`} style={{ marginBottom: "30px" }} />
       <div className={classes.imageSet}>
         <div className={classes.counts}>
           <p style={{ color: loading ? baseColor : "#fff" }}>{setText}</p>
           <h3 className={classes.currTotal}>{`${current}/${total}`}</h3>
-        </div>
-        <div className={classes.setPath}>
-          <TextField
-            classes={{ root: classes.customInput }}
-            label=""
-            variant="outlined"
-            value={inputs}
-            onChange={onInputChange}
-            InputLabelProps={{
-              shrink: true,
-              classes: {
-                root: classes.controlLabel,
-                focused: classes.controlLabel
-              }
-            }}
-            margin="normal"
-            InputProps={{
-              style: {
-                textAlign: "left",
-                width: "340px",
-                height: "40px"
-              },
-              classes: {
-                notchedOutline: classes.notchedOutline,
-                root: classes.formLabel
-              },
-              placeholder: "path/to/your/data"
-            }}
-          />
-          <Fab
-            classes={{
-              root: classes.customFab,
-              focusVisible: classes.customFab
-            }}
-          >
-            <AddIcon
-              onClick={_uploadSetPath}
-              classes={{ root: classes.customIcon }}
-            />
-          </Fab>
         </div>
         <SeperatLine
           title={`TopK = ${topK}`}
