@@ -1,13 +1,32 @@
-import React, { FC, createContext, ReactNode } from "react";
+import React, { FC, createContext, ReactNode, useState } from "react";
+import { makeStyles } from "@material-ui/core/styles";
 import axios from "axios";
+import ErrorIcon from "@material-ui/icons/ErrorOutline";
+import Snackbar from "@material-ui/core/Snackbar";
 import * as URL from "../utils/Endpoints";
 
 const axiosInstance = axios.create();
-
 export const queryContext = createContext<any>({});
 const Provider = queryContext.Provider;
 
+const useStyles = makeStyles({
+  root: {
+    marginTop: "20%"
+  },
+  color: {
+    color: "red",
+    marginRight: "10px"
+  }
+});
 const QueryProvider: FC<{ children: ReactNode }> = ({ children }) => {
+  const classes = useStyles();
+  const [status, setStatus]: any = useState({ isShow: false });
+
+  const showNote = (content: string) => {
+    setStatus({ isShow: true, content });
+  };
+
+  const hideNote = () => setStatus({ isShow: false });
   const errorParser = (e: any) => {
     console.log(e);
   };
@@ -25,7 +44,7 @@ const QueryProvider: FC<{ children: ReactNode }> = ({ children }) => {
   };
 
   const search = async (params: any) => {
-    const url = `${URL.SEARCH}?${Math.ceil(Math.random()*10000).toString()}`;
+    const url = `${URL.SEARCH}?${Math.ceil(Math.random() * 10000).toString()}`;
     return await axiosInstance.post(url, params).catch(errorParser);
   };
   const clearAll = async () => {
@@ -40,10 +59,35 @@ const QueryProvider: FC<{ children: ReactNode }> = ({ children }) => {
         process,
         count,
         search,
-        clearAll
+        clearAll,
+        showNote,
+        hideNote,
+        status
       }}
     >
       {children}
+      <Snackbar
+        classes={{ root: classes.root }}
+        open={status.isShow}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "center"
+        }}
+        autoHideDuration={6000}
+        onClose={() => hideNote()}
+        message={
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              color: "red"
+            }}
+          >
+            <ErrorIcon classes={{ root: classes.color }} />
+            <span>{status.content || ""}</span>
+          </div>
+        }
+      ></Snackbar>
     </Provider>
   );
 };

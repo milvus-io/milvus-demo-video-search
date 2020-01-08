@@ -144,9 +144,12 @@ const useStyles = makeStyles({
     color: "#838385"
   }
 });
-
+// /data/workspace/apptec/demo/test_100.smi
+// COc1ccc(cc1)SCCC(=O)NCCNS(=O)(=O)c1cccc(c1)Cl
 const Setting = (props: any) => {
-  const { load, process, count, search, clearAll } = useContext(queryContext);
+  const { showNote, load, process, count, search, clearAll } = useContext(
+    queryContext
+  );
   const { setResults, loading, setLoading } = props;
   const classes = useStyles({});
   const [inputs, setInputs]: any = useState("");
@@ -165,7 +168,8 @@ const Setting = (props: any) => {
     search({ Num: topK, Molecular }).then((res: any) => {
       const { status, data } = res || {};
       if (status === 200) {
-        setResults(data);
+        console.log(data, typeof data);
+        typeof data === "string" ? showNote(data) : setResults(data);
       }
     });
   };
@@ -244,7 +248,8 @@ const Setting = (props: any) => {
     <div className={classes.setting}>
       <div className={classes.header}>
         <img src={Logo} width="150px" alt="logo" />
-        <p>Molecular Formula Search</p>
+        <h3 style={{ marginBottom: "10px" }}>Molecular Formula Search</h3>
+        <p>For Research Properly Only</p>
       </div>
       <TextField
         classes={{ root: classes.MolecularInput }}
