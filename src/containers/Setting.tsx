@@ -54,7 +54,6 @@ const useStyles = makeStyles({
     marginBottom: "60px"
   },
   MolecularInput: {
-    margin: "0 0 40px 0 !important",
     color: "blue !important"
   },
   customInput: {
@@ -233,7 +232,11 @@ const Setting = (props: any) => {
           }
         }}
       />
+      <p style={{ marginBottom: "40px" }}>
+        eg: COc1nn(c(n1)c1ccccc1)c1ccc(cc1)S(=O)(=O)N
+      </p>
       <SeperatLine title={`CONFIG`} style={{ marginBottom: "30px" }} />
+
       <div className={classes.imageSet}>
         <div className={classes.counts}>
           <p style={{ color: loading ? baseColor : "#fff" }}>{setText}</p>
