@@ -149,7 +149,6 @@ const Setting = (props: any) => {
   const classes = useStyles({});
   const [topK, setTopK]: any = useState(5);
   const [totalNum, setTotalNum]: any = useState(0);
-  const [[current, total]]: any = useState([0, 0]);
   const [Molecular, setMolecular]: any = useState();
 
   const setText = loading
@@ -162,7 +161,6 @@ const Setting = (props: any) => {
     search({ Num: topK, Molecular }).then((res: any) => {
       const { status, data } = res || {};
       if (status === 200) {
-        console.log(data, typeof data);
         typeof data === "string" ? showNote(data) : setResults(data);
       }
     });
@@ -240,7 +238,6 @@ const Setting = (props: any) => {
       <div className={classes.imageSet}>
         <div className={classes.counts}>
           <p style={{ color: loading ? baseColor : "#fff" }}>{setText}</p>
-          <h3 className={classes.currTotal}>{`${current}/${total}`}</h3>
         </div>
         <SeperatLine
           title={`TopK = ${topK}`}
