@@ -154,8 +154,8 @@ const Setting = (props: any) => {
   const setText = loading
     ? "Loading..."
     : totalNum
-    ? `${totalNum} Molecular Formula in this set`
-    : "No Molecular Formula in this set";
+    ? `${totalNum} Chemical Structure in this set`
+    : "No Chemical Structure in this set";
 
   const _search = ({ topK, Molecular }: any) => {
     search({ Num: topK, Molecular }).then((res: any) => {
@@ -190,8 +190,8 @@ const Setting = (props: any) => {
     <div className={classes.setting}>
       <div className={classes.header}>
         <img src={Logo} width="150px" alt="logo" />
-        <h3 style={{ marginBottom: "10px" }}>Molecular Formula Search</h3>
-        <p>For Research Properly Only</p>
+        <h3 style={{ marginBottom: "10px" }}>Chemical Structure Search</h3>
+        <p>For Research Purpose Only</p>
       </div>
       <TextField
         classes={{ root: classes.MolecularInput }}
@@ -217,7 +217,7 @@ const Setting = (props: any) => {
             notchedOutline: classes.notchedOutline,
             root: classes.formLabel
           },
-          placeholder: "please input your chemistry",
+          placeholder: "please input your chemical structure",
           startAdornment: (
             <InputAdornment position="start">
               <SearchIcon />

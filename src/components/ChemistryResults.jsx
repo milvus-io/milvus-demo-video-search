@@ -56,8 +56,8 @@ const SearchResults = props => {
       </div>
       <ResultHeader
         title={"Structure Picture"}
-        Molecular={"Molecular"}
-        Distance={"Distance"}
+        Molecular={"chemical structure"}
+        Distance={"Jaccard Distance"}
         style={{ backgroundColor: "#000" }}
       />
       {datas.length === 0 && <div></div>}
