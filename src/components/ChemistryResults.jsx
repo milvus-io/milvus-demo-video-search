@@ -58,8 +58,8 @@ const SearchResults = props => {
       {!isMobile && (
         <ResultHeader
           title={"Structure Picture"}
-          Molecular={"Molecular"}
-          Distance={"Distance"}
+          Molecular={"chemical structure"}
+          Distance={"Jaccard Distance"}
           style={{ backgroundColor: "#000" }}
         />
       )}
