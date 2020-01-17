@@ -3,147 +3,150 @@ import { queryContext } from "../contexts/QueryContext";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import SearchIcon from "@material-ui/icons/Search";
+import Button from "@material-ui/core/Button";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Slider from "@material-ui/core/Slider";
 import SeperatLine from "../components/SeperatLine";
 import { baseColor } from "../utils/color";
 import Logo from "./Logo.svg";
 import { delayRunFunc } from "../utils/Helper";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
-const useStyles = makeStyles({
-  setting: {
-    display: "flex",
-    flexDirection: "column",
-    minWidth: "400px",
-    padding: "60px 20px",
-    borderWidth: "1px",
-    backgroundColor: "#1F2023",
-    color: "#E4E4E6",
-    overflowY: "auto"
-  },
-  header: {
-    marginBottom: "30px",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center"
-  },
-  config: {
-    fontSize: "24px",
-    color: "#FAFAFA"
-  },
-  clear: {
-    color: baseColor,
-    fontSize: "18px",
-    cursor: "pointer"
-  },
-  imageSet: {},
-  counts: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: "30px",
-    color: "#FAFAFA"
-  },
-  currTotal: {
-    fontSize: "12px"
-  },
-  setPath: {
-    display: "flex",
-    justifyContent: "start",
-    alignItems: "center",
-    marginBottom: "60px"
-  },
-  MolecularInput: {
-    color: "blue !important"
-  },
-  customInput: {
-    margin: "0 20px 0 0 !important",
-    color: "blue !important"
-  },
-  customFab: {
-    color: "#fff",
-    backgroundColor: baseColor,
-    width: "36px",
-    height: "36px",
-    "&:hover": {
-      backgroundColor: baseColor
-    }
-  },
-  customDeleteFab: {
-    position: "absolute",
-    top: "5px",
-    right: "5px",
-    color: "#fff",
-    backgroundColor: "#666769",
-    width: "24px",
-    height: "24px",
-    minHeight: "0px",
-    "&:hover": {
-      backgroundColor: "#666769"
-    }
-  },
-  customDelete: {
-    color: "#A7A7AF",
-    width: "18px",
-    height: "18px"
-  },
-  customIcon: {
-    color: "#fff",
-    backgroundColor: baseColor,
-    width: "20px",
-    height: "20px"
-  },
-  customSlider: {
-    color: baseColor,
-    marginBottom: "30px"
-  },
-  thumb: {
-    width: "16px",
-    height: "16px"
-  },
-  track: {
-    height: "4px",
-    borderRadius: "10px"
-  },
-  upload: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center"
-  },
-  benchImage: {
-    width: "400px",
-    height: "250px",
-    position: "relative"
-  },
-  dropzoneContainer: {
-    backgroundColor: "transparent",
-    width: "250px",
-    height: "250px",
-    borderRadius: "10px",
-    border: "solid .5px #C8C8C8",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center"
-  },
-  dropzoneText: {
-    fontSize: "14px",
-    color: "#B3B4B5",
-    marginBottom: "30px"
-  },
-  notchedOutline: {
-    borderWidth: ".5px",
-    borderColor: "#838385 !important"
-  },
-  formLabel: {
-    color: "#fff"
-  },
-  controlLabel: {
-    color: "#838385"
-  }
-});
 // /data/workspace/apptec/demo/test_100.smi
 // COc1ccc(cc1)SCCC(=O)NCCNS(=O)(=O)c1cccc(c1)Cl
 const Setting = (props: any) => {
+  const isMobile = !useMediaQuery("(min-width:1000px)");
+  const useStyles = makeStyles({
+    setting: {
+      display: "flex",
+      flexDirection: "column",
+      minWidth: isMobile ? "auto" : "400px",
+      padding: isMobile ? "20px" : "60px 20px",
+      borderWidth: "1px",
+      backgroundColor: "#1F2023",
+      color: "#E4E4E6",
+      overflowY: "auto"
+    },
+    header: {
+      marginBottom: "30px",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center"
+    },
+    config: {
+      fontSize: "24px",
+      color: "#FAFAFA"
+    },
+    clear: {
+      color: baseColor,
+      fontSize: "18px",
+      cursor: "pointer"
+    },
+    imageSet: {},
+    counts: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: "30px",
+      color: "#FAFAFA"
+    },
+    currTotal: {
+      fontSize: "12px"
+    },
+    setPath: {
+      display: "flex",
+      justifyContent: "start",
+      alignItems: "center",
+      marginBottom: "60px"
+    },
+    MolecularInput: {
+      color: "blue !important"
+    },
+    customInput: {
+      margin: "0 20px 0 0 !important",
+      color: "blue !important"
+    },
+    customFab: {
+      color: "#fff",
+      backgroundColor: baseColor,
+      width: "36px",
+      height: "36px",
+      "&:hover": {
+        backgroundColor: baseColor
+      }
+    },
+    customDeleteFab: {
+      position: "absolute",
+      top: "5px",
+      right: "5px",
+      color: "#fff",
+      backgroundColor: "#666769",
+      width: "24px",
+      height: "24px",
+      minHeight: "0px",
+      "&:hover": {
+        backgroundColor: "#666769"
+      }
+    },
+    customDelete: {
+      color: "#A7A7AF",
+      width: "18px",
+      height: "18px"
+    },
+    customIcon: {
+      color: "#fff",
+      backgroundColor: baseColor,
+      width: "20px",
+      height: "20px"
+    },
+    customSlider: {
+      color: baseColor,
+      marginBottom: "30px"
+    },
+    thumb: {
+      width: "16px",
+      height: "16px"
+    },
+    track: {
+      height: "4px",
+      borderRadius: "10px"
+    },
+    upload: {
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center"
+    },
+    benchImage: {
+      width: "400px",
+      height: "250px",
+      position: "relative"
+    },
+    dropzoneContainer: {
+      backgroundColor: "transparent",
+      width: "250px",
+      height: "250px",
+      borderRadius: "10px",
+      border: "solid .5px #C8C8C8",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center"
+    },
+    dropzoneText: {
+      fontSize: "14px",
+      color: "#B3B4B5",
+      marginBottom: "30px"
+    },
+    notchedOutline: {
+      borderWidth: ".5px",
+      borderColor: "#838385 !important"
+    },
+    formLabel: {
+      color: "#fff"
+    },
+    controlLabel: {
+      color: "#838385"
+    }
+  });
   const { showNote, count, search } = useContext(queryContext);
   const { setResults, loading } = props;
   const classes = useStyles({});
@@ -191,7 +194,7 @@ const Setting = (props: any) => {
       <div className={classes.header}>
         <img src={Logo} width="150px" alt="logo" />
         <h3 style={{ marginBottom: "10px" }}>Molecular Formula Search</h3>
-        <p>For Research Properly Only</p>
+        {isMobile ? "" : <p>For Research Properly Only</p>}
       </div>
       <TextField
         classes={{ root: classes.MolecularInput }}
@@ -210,7 +213,7 @@ const Setting = (props: any) => {
         InputProps={{
           style: {
             textAlign: "left",
-            width: "400px",
+            width: isMobile ? "auto" : "400px",
             height: "40px"
           },
           classes: {
@@ -230,11 +233,11 @@ const Setting = (props: any) => {
           }
         }}
       />
-      <p style={{ marginBottom: "40px" }}>
+      <Button variant="contained" onClick={()=>{_search({ topK, Molecular });}}>Search</Button>
+      <p style={{ marginBottom: "40px", marginTop: '10px' }}>
         eg: COc1nn(c(n1)c1ccccc1)c1ccc(cc1)S(=O)(=O)N
       </p>
-      <SeperatLine title={`CONFIG`} style={{ marginBottom: "30px" }} />
-
+      {/* <SeperatLine title={`CONFIG`} style={{ marginBottom: "30px" }} /> */}
       <div className={classes.imageSet}>
         <div className={classes.counts}>
           <p style={{ color: loading ? baseColor : "#fff" }}>{setText}</p>

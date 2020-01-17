@@ -1,21 +1,28 @@
-import React, { useState,  } from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import QueryProvider from "./contexts/QueryContext";
 import Setting from "./containers/Setting";
 import SearchResults from "./components/ChemistryResults";
-
-const useStyles = makeStyles({
-  root: {
-    flexGrow: 1,
-    display: "flex",
-    overflow: "hidden"
-  }
-});
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 const App: React.FC = () => {
-  const classes = useStyles({});
   const [results, setResults]: any = useState([]);
   const [loading, setLoading]: any = useState(false);
+
+  const isMobile = !useMediaQuery("(min-width:1000px)");
+  console.log(isMobile);
+
+  const useStyles = makeStyles({
+    root: {
+      flexGrow: 1,
+      background: "#1F2023",
+      display: isMobile ? "block" : "flex",
+      overflow: isMobile ? "auto" : "hidden"
+    }
+  });
+
+  const classes = useStyles({});
+
   return (
     <QueryProvider>
       <div className={classes.root}>

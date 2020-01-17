@@ -3,30 +3,31 @@ import { makeStyles } from "@material-ui/core/styles";
 import Carousel, { Modal, ModalGateway } from "react-images";
 import ResultHeader from "./ChemistryResultHeader";
 import Result from "./ChemistryResult";
-
-const useStyles = makeStyles({
-  root: {
-    flexGrow: 1,
-    overflowX: "hidden",
-    overflowY: "auto",
-    padding: "80px 60px",
-    display: "flex",
-    flexDirection: "column",
-    backgroundColor: "#28292E"
-  },
-  title: {
-    margin: "20px 0px 10px",
-    fontSize: "20px",
-    color: "#F5F5F5"
-  },
-  subTitle: {
-    fontSize: "15px",
-    color: "#F1F1F1",
-    marginBottom: "１0px !important"
-  }
-});
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 const SearchResults = props => {
+  const isMobile = !useMediaQuery("(min-width:1000px)");
+  const useStyles = makeStyles({
+    root: {
+      flexGrow: 1,
+      overflowX: "hidden",
+      overflowY: "auto",
+      padding: isMobile ? "10px" : "80px 60px",
+      display: "flex",
+      flexDirection: "column",
+      backgroundColor: "#28292E"
+    },
+    title: {
+      margin: "20px 0px 10px",
+      fontSize: "20px",
+      color: "#F5F5F5"
+    },
+    subTitle: {
+      fontSize: "15px",
+      color: "#F1F1F1",
+      marginBottom: "１0px !important"
+    }
+  });
   const classes = useStyles({});
   const { results = [] } = props;
   const [currentImage, setCurrentImage] = useState(0);
@@ -54,12 +55,14 @@ const SearchResults = props => {
       <div className={classes.title}>
         <h3 className={classes.title}>Search Results</h3>
       </div>
-      <ResultHeader
-        title={"Structure Picture"}
-        Molecular={"Molecular"}
-        Distance={"Distance"}
-        style={{ backgroundColor: "#000" }}
-      />
+      {!isMobile && (
+        <ResultHeader
+          title={"Structure Picture"}
+          Molecular={"Molecular"}
+          Distance={"Distance"}
+          style={{ backgroundColor: "#000" }}
+        />
+      )}
       {datas.length === 0 && <div></div>}
       <>
         {datas.map((data, index) => {
