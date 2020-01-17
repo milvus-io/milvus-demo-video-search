@@ -1,7 +1,10 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import ZoomInIcon from "@material-ui/icons/ZoomIn";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+
 const Result = props => {
+  const isMobile = !useMediaQuery("(min-width:1000px)");
   const { src, Molecular, Distance, style, onClick } = props;
   const useStyles = makeStyles({
     container: {
@@ -39,20 +42,22 @@ const Result = props => {
     label: {
       flexGrow: "1",
       height: "100%",
-      display: "flex",
+      display: isMobile ? 'block': "flex",
       justifyContent: "start",
       alignItems: "center",
-      fontSize: "1vw",
+      fontSize: isMobile ? "auto" : "1vw",
       color: "#fff"
     },
     formula: {
       width: "70%",
+      fontSize: "14px",
       wordWrap: "break-word",
       wordBreak: "break-all",
-      padding: "0 30px 0 0"
+      padding: isMobile ? "0" : "0 30px 0 0",
+      marginBottom: isMobile ? '10px': 0
     },
     distance: {
-      width: "30%"
+      width: isMobile ? "20%" : "30%"
     },
     icon: {
       position: "absolute",
@@ -68,7 +73,7 @@ const Result = props => {
         <ZoomInIcon className={classes.icon} />
       </div>
       <div className={classes.label}>
-        <p className={classes.formula}>{Molecular}</p>
+        <p className={classes.formula}><b>{Molecular}</b></p>
         <p className={classes.distance}>{Distance}</p>
       </div>
     </div>
