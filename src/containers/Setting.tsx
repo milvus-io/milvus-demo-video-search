@@ -1,19 +1,28 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { queryContext } from "../contexts/QueryContext";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import SearchIcon from "@material-ui/icons/Search";
+import CloudUploadIcon from "@material-ui/icons/CloudUpload"
 import Button from "@material-ui/core/Button";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import Slider from "@material-ui/core/Slider";
-import SeperatLine from "../components/SeperatLine";
+import LinearProgress from "@material-ui/core/LinearProgress";
 import { baseColor } from "../utils/color";
 import Logo from "./Logo.svg";
-import { delayRunFunc } from "../utils/Helper";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
-// /data/workspace/apptec/demo/test_100.smi
-// COc1ccc(cc1)SCCC(=O)NCCNS(=O)(=O)c1cccc(c1)Cl
+const TITLE = 'Video Search By Image'
+const SUB_TITLE = 'demo use';
+const PLACEHOLDER: any = {
+  name: "please input video's name",
+  alias: "please input video's alias, split with ', '",
+  path: "please input video'path",
+  image: "please input image's path, split with ', '",
+  imageDes: 'please input image description'
+};
+const ButtonLabel: any = {
+  insert: 'Insert',
+  search: "Search"
+};
 const Setting = (props: any) => {
   const isMobile = !useMediaQuery("(min-width:1000px)");
   const useStyles = makeStyles({
@@ -99,18 +108,6 @@ const Setting = (props: any) => {
       width: "20px",
       height: "20px"
     },
-    customSlider: {
-      color: baseColor,
-      marginBottom: "30px"
-    },
-    thumb: {
-      width: "16px",
-      height: "16px"
-    },
-    track: {
-      height: "4px",
-      borderRadius: "10px"
-    },
     upload: {
       display: "flex",
       justifyContent: "center",
@@ -147,61 +144,74 @@ const Setting = (props: any) => {
       color: "#838385"
     }
   });
-  const { showNote, count, search } = useContext(queryContext);
-  const { setResults, loading } = props;
+  const { upload, search, queryStatus } = useContext(queryContext);
+  const { setResults, loading, setLoading } = props;
   const classes = useStyles({});
-  const [topK, setTopK]: any = useState(5);
-  const [totalNum, setTotalNum]: any = useState(0);
-  const [Molecular, setMolecular]: any = useState();
+  const [insertParams, setInsertParams]: any = useState({
+    Name: '',
+    Alias: '',
+    Path: ''
+  })
+  const [searchParams, setSearchParams]: any = useState({
+    Name: '',
+    describe: '',
+  })
+  const [processPercent, setProcessPercent]: any = useState(0)
+  const keepQueryStatus = async (id: string) => {
+    setLoading(true)
+    queryStatus({ id }).then((res: any) => {
+      if (res && res.Stage === '') {
+        setProcessPercent(res.Percent);
+        setTimeout(() => {
+          keepQueryStatus(id)
+        }, 1000)
+      } else {
+        setLoading(false);
+        setProcessPercent(0)
+      }
+    })
+  }
+  const _parseStrToArr = (str: string) => {
+    return str.split(',')
+      .filter((str: string) => !!str)
+      .map((str: string) => str.trim())
+  }
+  const _upLoadVideo = async (params: any) => {
+    const parsedAlias = _parseStrToArr(params.alias)
+    params = { ...params, parsedAlias }
+    upload(params).then((res: any) => {
+      if (res && res.status === 200) {
+        const { alias, id } = res.body;
+        console.log(alias, id);
+        keepQueryStatus(id)
+      }
+    })
+  }
 
-  const setText = loading
-    ? "Loading..."
-    : totalNum
-    ? `${totalNum} Chemical Structure in this set`
-    : "No Chemical Structure in this set";
-
-  const _search = ({ topK, Molecular }: any) => {
-    search({ Num: topK, Molecular }).then((res: any) => {
+  const _search = (params: any) => {
+    const file = _parseStrToArr(params.file);
+    params = { ...params, file }
+    search(params).then((res: any) => {
       const { status, data } = res || {};
       if (status === 200) {
-        typeof data === "string" ? showNote(data) : setResults(data);
+        setResults(data)
       }
     });
   };
-  const _changeFormula = (e: any) => {
-    const val = e.target.value;
-    setMolecular(val);
-  };
-  const onTopKChange = (e: any, val: any) => {
-    setTopK(val);
-    if (val && Molecular) {
-      delayRunFunc({ topK: val, Molecular }, _search, 300);
-    }
-  };
-
-  useEffect(() => {
-    count().then((res: any) => {
-      const { data, status } = res || {};
-      if (status === 200) {
-        setTotalNum(data);
-      }
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <div className={classes.setting}>
       <div className={classes.header}>
         <img src={Logo} width="150px" alt="logo" />
-        <h3 style={{ marginBottom: "10px" }}>Chemical Structure Search</h3>
-        {isMobile ? "" : <p>For Research Properly Only</p>}
+        <h3 style={{ marginBottom: "10px" }}>{TITLE}</h3>
+        {isMobile ? "" : <p>{SUB_TITLE}</p>}
       </div>
       <TextField
         classes={{ root: classes.MolecularInput }}
         label=""
         variant="outlined"
-        value={Molecular || ""}
-        onChange={_changeFormula}
+        value={insertParams.Name || ""}
+        onChange={(e: any) => setInsertParams({ ...insertParams, Name: e.target.value })}
         InputLabelProps={{
           shrink: true,
           classes: {
@@ -220,48 +230,135 @@ const Setting = (props: any) => {
             notchedOutline: classes.notchedOutline,
             root: classes.formLabel
           },
-          placeholder: "please input your chemical structure",
-          startAdornment: (
-            <InputAdornment position="start">
-              <SearchIcon />
-            </InputAdornment>
-          ),
+          placeholder: PLACEHOLDER.name,
+        }}
+      />
+      <TextField
+        classes={{ root: classes.MolecularInput }}
+        label=""
+        variant="outlined"
+        value={insertParams.Alias || ""}
+        onChange={(e: any) => setInsertParams({ ...insertParams, Alias: e.target.value })}
+        InputLabelProps={{
+          shrink: true,
+          classes: {
+            root: classes.controlLabel,
+            focused: classes.controlLabel
+          }
+        }}
+        margin="normal"
+        InputProps={{
+          style: {
+            textAlign: "left",
+            width: isMobile ? "auto" : "400px",
+            height: "40px"
+          },
+          classes: {
+            notchedOutline: classes.notchedOutline,
+            root: classes.formLabel
+          },
+          placeholder: PLACEHOLDER.alias,
+        }}
+      />
+      <TextField
+        classes={{ root: classes.MolecularInput }}
+        label=""
+        variant="outlined"
+        value={insertParams.Path || ""}
+        onChange={(e: any) => setInsertParams({ ...insertParams, Path: e.target.value })}
+        InputLabelProps={{
+          shrink: true,
+          classes: {
+            root: classes.controlLabel,
+            focused: classes.controlLabel
+          }
+        }}
+        margin="normal"
+        InputProps={{
+          style: {
+            textAlign: "left",
+            width: isMobile ? "auto" : "400px",
+            height: "40px"
+          },
+          classes: {
+            notchedOutline: classes.notchedOutline,
+            root: classes.formLabel
+          },
+          placeholder: PLACEHOLDER.path,
+        }}
+      />
+      <Button startIcon={<CloudUploadIcon />} variant="contained" onClick={() => _upLoadVideo(insertParams)}>{ButtonLabel.insert}</Button>
+      {loading && (
+        <div className={classes.imageSet}>
+          <LinearProgress value={processPercent} />
+        </div>
+      )}
+
+      <TextField
+        classes={{ root: classes.MolecularInput }}
+        label=""
+        variant="outlined"
+        value={searchParams.Name || ""}
+        onChange={(e: any) => setSearchParams({ ...searchParams, Name: e.target.value })}
+        InputLabelProps={{
+          shrink: true,
+          classes: {
+            root: classes.controlLabel,
+            focused: classes.controlLabel
+          }
+        }}
+        margin="normal"
+        InputProps={{
+          style: {
+            textAlign: "left",
+            width: isMobile ? "auto" : "400px",
+            height: "40px"
+          },
+          classes: {
+            notchedOutline: classes.notchedOutline,
+            root: classes.formLabel
+          },
+          placeholder: PLACEHOLDER.image,
           onKeyPress: (e: any) => {
             if (e.key === "Enter") {
-              _search({ topK, Molecular });
+              // _search({ topK, Molecular });
             }
           }
         }}
       />
-      <Button variant="contained" onClick={()=>{_search({ topK, Molecular });}}>Search</Button>
-      <p style={{ marginBottom: "40px", marginTop: '10px' }}>
-        eg: COc1nn(c(n1)c1ccccc1)c1ccc(cc1)S(=O)(=O)N
-      </p>
-      {/* <SeperatLine title={`CONFIG`} style={{ marginBottom: "30px" }} /> */}
-      <div className={classes.imageSet}>
-        <div className={classes.counts}>
-          <p style={{ color: loading ? baseColor : "#fff" }}>{setText}</p>
-        </div>
-        <SeperatLine
-          title={`TopK = ${topK}`}
-          style={{ marginBottom: "20px" }}
-        />
-        <div className={classes.counts}>
-          <p>{`show top ${topK} results`}</p>
-        </div>
-        <Slider
-          min={1}
-          max={100}
-          value={topK}
-          onChange={onTopKChange}
-          classes={{
-            root: classes.customSlider,
-            track: classes.track,
-            rail: classes.track,
-            thumb: classes.thumb
-          }}
-        />
-      </div>
+      <TextField
+        classes={{ root: classes.MolecularInput }}
+        label=""
+        variant="outlined"
+        value={searchParams.describe || ""}
+        onChange={(e: any) => setSearchParams({ ...searchParams, describe: e.target.value })}
+        InputLabelProps={{
+          shrink: true,
+          classes: {
+            root: classes.controlLabel,
+            focused: classes.controlLabel
+          }
+        }}
+        margin="normal"
+        InputProps={{
+          style: {
+            textAlign: "left",
+            width: isMobile ? "auto" : "400px",
+            height: "40px"
+          },
+          classes: {
+            notchedOutline: classes.notchedOutline,
+            root: classes.formLabel
+          },
+          placeholder: PLACEHOLDER.imageDes,
+          onKeyPress: (e: any) => {
+            if (e.key === "Enter") {
+              // _search({ topK, Molecular });
+            }
+          }
+        }}
+      />
+      <Button startIcon={<SearchIcon />} variant="contained" onClick={() => { _search(searchParams) }}>{ButtonLabel.search}</Button>
     </div>
   );
 };

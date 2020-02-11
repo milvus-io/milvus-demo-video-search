@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import QueryProvider from "./contexts/QueryContext";
 import Setting from "./containers/Setting";
-import SearchResults from "./components/ChemistryResults";
+import SearchResults from "./components/VideoResults";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 const App: React.FC = () => {
@@ -10,7 +10,6 @@ const App: React.FC = () => {
   const [loading, setLoading]: any = useState(false);
 
   const isMobile = !useMediaQuery("(min-width:1000px)");
-  console.log(isMobile);
 
   const useStyles = makeStyles({
     root: {
@@ -26,7 +25,7 @@ const App: React.FC = () => {
   return (
     <QueryProvider>
       <div className={classes.root}>
-        <Setting setResults={setResults} setLoading={setLoading} />
+        <Setting setResults={setResults} loading={loading} setLoading={setLoading} />
         <SearchResults results={results} />
         {loading && (
           <div

@@ -1,10 +1,11 @@
 import React, { useState, useCallback } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Carousel, { Modal, ModalGateway } from "react-images";
-import ResultHeader from "./ChemistryResultHeader";
-import Result from "./ChemistryResult";
+import ResultHeader from "./ResultHeader";
+import Result from "./Result";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
+const TITLE = `Search Results`
 const SearchResults = props => {
   const isMobile = !useMediaQuery("(min-width:1000px)");
   const useStyles = makeStyles({
@@ -53,7 +54,7 @@ const SearchResults = props => {
   return (
     <div className={classes.root}>
       <div className={classes.title}>
-        <h3 className={classes.title}>Search Results</h3>
+        <h3 className={classes.title}>{TITLE}</h3>
       </div>
       {!isMobile && (
         <ResultHeader
