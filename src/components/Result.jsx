@@ -5,7 +5,7 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 const Result = props => {
   const isMobile = !useMediaQuery("(min-width:1000px)");
-  const { src, Molecular, Distance, style, onClick } = props;
+  const { distance, id, imgUrl, path, time, video, style, onClick } = props;
   const useStyles = makeStyles({
     container: {
       width: "100%",
@@ -42,7 +42,7 @@ const Result = props => {
     label: {
       flexGrow: "1",
       height: "100%",
-      display: isMobile ? 'block': "flex",
+      display: isMobile ? 'block' : "flex",
       justifyContent: "start",
       alignItems: "center",
       fontSize: isMobile ? "auto" : "1vw",
@@ -54,7 +54,7 @@ const Result = props => {
       wordWrap: "break-word",
       wordBreak: "break-all",
       padding: isMobile ? "0" : "0 30px 0 0",
-      marginBottom: isMobile ? '10px': 0
+      marginBottom: isMobile ? '10px' : 0
     },
     distance: {
       width: isMobile ? "20%" : "30%"
@@ -69,12 +69,15 @@ const Result = props => {
   return (
     <div className={classes.container}>
       <div className={classes.structure}>
-        <img src={src} className={classes.child} alt="" onClick={onClick} />
+        <img src={imgUrl} className={classes.child} alt="" onClick={onClick} />
         <ZoomInIcon className={classes.icon} />
       </div>
       <div className={classes.label}>
-        <p className={classes.formula}><b>{Molecular}</b></p>
-        <p className={classes.distance}>{Distance}</p>
+        <p className={classes.formula}><b>{distance}</b></p>
+        <p className={classes.distance}>{id}</p>
+        <p className={classes.distance}>{path}</p>
+        <p className={classes.distance}>{video}</p>
+        <p className={classes.distance}>{time}</p>
       </div>
     </div>
   );

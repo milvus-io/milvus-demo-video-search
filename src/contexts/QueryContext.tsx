@@ -31,8 +31,10 @@ const QueryProvider: FC<{ children: ReactNode }> = ({ children }) => {
     console.log(e);
   };
   const search = async (params: any) => {
-    const url = `${URL.SEARCH}?${Math.ceil(Math.random() * 10000).toString()}`;
-    return await axiosInstance.post(url, params).catch(errorParser);
+    const url = URL.SEARCH;
+    var bodyFormData = new FormData()
+    bodyFormData.set('file', params.file);
+    return await axiosInstance.post(url, bodyFormData).catch(errorParser);
   };
   const upload = async (params: any) => {
     const url = URL.UPLOAD;
@@ -40,7 +42,9 @@ const QueryProvider: FC<{ children: ReactNode }> = ({ children }) => {
   }
   const queryStatus = async (params: any) => {
     const url = URL.QUERY_STATUS;
-    return await axiosInstance.post(url, params).catch(errorParser);
+    var bodyFormData = new FormData()
+    bodyFormData.set('id', params.id);
+    return await axiosInstance.post(url, bodyFormData).catch(errorParser);
   }
 
 

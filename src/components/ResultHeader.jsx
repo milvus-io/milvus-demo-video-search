@@ -2,7 +2,7 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 
 const ResultHeader = props => {
-  const { title, Molecular, Distance, style } = props;
+  const { title, id, distance, path, time, video, style } = props;
   const useStyles = makeStyles({
     container: {
       width: "100%",
@@ -10,7 +10,7 @@ const ResultHeader = props => {
       alignItems: "start",
       ...style
     },
-    structure: {
+    id: {
       position: "relative",
       flex: "0 0 21%",
       paddingTop: "4%",
@@ -28,7 +28,7 @@ const ResultHeader = props => {
       margin: "auto",
       display: "flex",
       justifyContent: "start",
-      paddingLeft:'10px',
+      paddingLeft: '10px',
       alignItems: "center",
       color: "#fff",
       fontSize: "1vw",
@@ -55,12 +55,15 @@ const ResultHeader = props => {
   const classes = useStyles({});
   return (
     <div className={classes.container}>
-      <div className={classes.structure}>
+      <div className={classes.id}>
         <p className={classes.child}>{title}</p>
       </div>
       <div className={classes.label}>
-        <p className={classes.formula}>{Molecular}</p>
-        <p className={classes.distance}>{Distance}</p>
+        <p className={classes.formula}>{distance}</p>
+        <p className={classes.distance}>{id}</p>
+        <p className={classes.distance}>{video}</p>
+        <p className={classes.distance}>{time}</p>
+        <p className={classes.distance}>{path}</p>
       </div>
     </div>
   );
