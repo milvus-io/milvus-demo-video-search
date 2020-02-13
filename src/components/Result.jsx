@@ -14,7 +14,7 @@ const _parseTime = (time) => {
 }
 const Result = props => {
   const isMobile = !useMediaQuery("(min-width:1000px)");
-  const { distance, id, imgUrl, path, time, video, style, onClick } = props;
+  const { distance, id, image, path, time, video, style, onClick } = props;
   const useStyles = makeStyles({
     container: {
       width: "100%",
@@ -72,10 +72,11 @@ const Result = props => {
     }
   });
   const classes = useStyles({});
+  const src = `data:image/png;base64, ${image}`
   return (
     <div className={classes.container}>
       <div className={classes.structure}>
-        <img src={imgUrl} className={classes.child} alt="" onClick={onClick} />
+        <img src={src} className={classes.child} alt="" onClick={onClick} />
         <ZoomInIcon className={classes.icon} />
       </div>
       <div className={classes.label}>

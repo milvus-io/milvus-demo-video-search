@@ -161,7 +161,7 @@ const Setting = (props: any) => {
     Alias: 'test, aha',
     Path: '/test1'
   })
-  const [searchParams, setSearchParams]: any = useState('http://139.198.21.118:9000/test1/output11.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20200212%2F%2Fs3%2Faws4_request&X-Amz-Date=20200212T094330Z&X-Amz-Expires=432000&X-Amz-SignedHeaders=host&X-Amz-Signature=29b5b2676211ebcb507291f932f5a0eed677baae40e26511fee353dc77a57f63')
+  const [searchParams, setSearchParams]: any = useState('http://139.198.21.118:9000/tmp/65f12e7d-6860-476b-930b-1bd5e3acd60a/output19.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20200213%2F%2Fs3%2Faws4_request&X-Amz-Date=20200213T022451Z&X-Amz-Expires=432000&X-Amz-SignedHeaders=host&X-Amz-Signature=fc18e1e93024a1b663e927c887b898bee8da70024a16f8d103a684cf888a1e68')
   const [process, setProcess]: any = useState({ Stage: '', Percent: 0 })
   const keepQueryStatus = async (id: string) => {
     !loading && setLoading(true)
