@@ -1,6 +1,15 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 
+const _parseNum = num => {
+  return num < 10 ? `0${num}` : num
+}
+const _parseTime = (time) => {
+  const hour = Math.floor(time / 3600);
+  const min = Math.floor((time - hour * 3600) / 60);
+  const seconds = time % 60
+  return `${_parseNum(hour)}:${_parseNum(min)}:${_parseNum(seconds)}`
+}
 const ResultHeader = props => {
   const { title, id, distance, path, time, video, style } = props;
   const useStyles = makeStyles({
@@ -64,7 +73,7 @@ const ResultHeader = props => {
         <p className={classes.distance}>{distance}</p>
         <p className={classes.distance}>{id}</p>
         <p className={classes.distance}>{video}</p>
-        <p className={classes.distance}>{time}</p>
+        <p className={classes.distance}>{_parseTime(time)}</p>
         <p className={classes.distance}>{path}</p>
       </div>
     </div>
