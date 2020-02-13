@@ -47,9 +47,11 @@ const ResultHeader = props => {
       textAlign: "left"
     },
     distance: {
+      textAlign: "left",
+      wordWrap: "break-word",
+      wordBreak: "break-all",
       width: "30%",
-      textAlign: "left"
-
+      marginRight: "20px"
     }
   });
   const classes = useStyles({});
@@ -59,7 +61,7 @@ const ResultHeader = props => {
         <p className={classes.child}>{title}</p>
       </div>
       <div className={classes.label}>
-        <p className={classes.formula}>{distance}</p>
+        <p className={classes.distance}>{distance}</p>
         <p className={classes.distance}>{id}</p>
         <p className={classes.distance}>{video}</p>
         <p className={classes.distance}>{time}</p>

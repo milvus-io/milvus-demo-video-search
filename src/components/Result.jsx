@@ -5,6 +5,7 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 const Result = props => {
   const isMobile = !useMediaQuery("(min-width:1000px)");
+  console.log(props)
   const { distance, id, imgUrl, path, time, video, style, onClick } = props;
   const useStyles = makeStyles({
     container: {
@@ -48,16 +49,13 @@ const Result = props => {
       fontSize: isMobile ? "auto" : "1vw",
       color: "#fff"
     },
-    formula: {
-      width: "70%",
-      fontSize: "14px",
+    distance: {
       wordWrap: "break-word",
       wordBreak: "break-all",
-      padding: isMobile ? "0" : "0 30px 0 0",
-      marginBottom: isMobile ? '10px' : 0
-    },
-    distance: {
-      width: isMobile ? "20%" : "30%"
+      width: isMobile ? "20%" : "30%",
+      marginBottom: isMobile ? '10px' : '0px',
+      marginRight: isMobile ? '0px' : '20px'
+
     },
     icon: {
       position: "absolute",
@@ -73,11 +71,11 @@ const Result = props => {
         <ZoomInIcon className={classes.icon} />
       </div>
       <div className={classes.label}>
-        <p className={classes.formula}><b>{distance}</b></p>
+        <p className={classes.distance}><b>{distance}</b></p>
         <p className={classes.distance}>{id}</p>
-        <p className={classes.distance}>{path}</p>
         <p className={classes.distance}>{video}</p>
         <p className={classes.distance}>{time}</p>
+        <p className={classes.distance}>{path}</p>
       </div>
     </div>
   );

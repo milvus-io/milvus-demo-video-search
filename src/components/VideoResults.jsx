@@ -44,16 +44,17 @@ const SearchResults = props => {
     setViewerIsOpen(false);
   };
 
-  //   [
-  //     {
-  //         "distance": 0,
-  //         "id": 1581500222911524000,
-  //         "imgUrl": "http://localhost:9000/tmp/2ff8896f-32cf-42b3-b515-1e48a4e43d2c/output11.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20200212%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20200212T095250Z&X-Amz-Expires=460800&X-Amz-SignedHeaders=host&X-Amz-Signature=734c947e3c306c795701fcdfde05a6da127040cff7cc04c16121b391887839b7",
-  //         "path": "/test1",
-  //         "time": 11,
-  //         "video": "dt.flv"
-  //     }
-  // ]
+  const _results = [
+    {
+      "distance": 0,
+      "id": 1581500222911524000,
+      "imgUrl": "http://localhost:9000/tmp/2ff8896f-32cf-42b3-b515-1e48a4e43d2c/output11.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20200212%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20200212T095250Z&X-Amz-Expires=460800&X-Amz-SignedHeaders=host&X-Amz-Signature=734c947e3c306c795701fcdfde05a6da127040cff7cc04c16121b391887839b7",
+      "path": "/test1",
+      "time": 11,
+      "video": "dt.flv"
+    }
+  ]
+  console.log(results)
   return (
     <div className={classes.root}>
       <div className={classes.title}>
@@ -70,9 +71,9 @@ const SearchResults = props => {
           style={{ backgroundColor: "#000" }}
         />
       )}
-      {results.length === 0 && <div></div>}
+      {_results.length === 0 && <div></div>}
       <>
-        {results.map((data, index) => {
+        {_results.map((data, index) => {
           return (
             <Result
               {...data}
