@@ -5,7 +5,6 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 const Result = props => {
   const isMobile = !useMediaQuery("(min-width:1000px)");
-  console.log(props)
   const { distance, id, imgUrl, path, time, video, style, onClick } = props;
   const useStyles = makeStyles({
     container: {

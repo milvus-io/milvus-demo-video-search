@@ -167,7 +167,7 @@ const Setting = (props: any) => {
     !loading && setLoading(true)
     queryStatus({ id }).then((res: any) => {
       const shoudKeepQuery = res && res.data && (res.data.Stage === 'extract' || (res.data.Stage === 'predict' && res.data.Percent < 1))
-      console.log(res.data)
+      // console.log(res.data)
       if (shoudKeepQuery) {
         setProcess(res.data);
         setTimeout(() => {
@@ -193,8 +193,7 @@ const Setting = (props: any) => {
 
     upload(bodyFormData).then((res: any) => {
       if (res && res.status === 200) {
-        const { alias, id } = res.data;
-        console.log(alias, id);
+        const { id } = res.data;
         keepQueryStatus(id)
       }
     })
