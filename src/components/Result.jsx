@@ -3,6 +3,15 @@ import { makeStyles } from "@material-ui/core/styles";
 import ZoomInIcon from "@material-ui/icons/ZoomIn";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
+const _parseNum = num => {
+  return num < 10 ? `0${num}` : num
+}
+const _parseTime = (time) => {
+  const hour = Math.floor(time / 3600);
+  const min = Math.floor((time - hour * 3600) / 60);
+  const seconds = time % 60
+  return `${_parseNum(hour)}:${_parseNum(min)}:${_parseNum(seconds)}`
+}
 const Result = props => {
   const isMobile = !useMediaQuery("(min-width:1000px)");
   const { distance, id, imgUrl, path, time, video, style, onClick } = props;
@@ -73,7 +82,7 @@ const Result = props => {
         <p className={classes.distance}><b>{distance}</b></p>
         <p className={classes.distance}>{id}</p>
         <p className={classes.distance}>{video}</p>
-        <p className={classes.distance}>{time}</p>
+        <p className={classes.distance}>{_parseTime(time)}</p>
         <p className={classes.distance}>{path}</p>
       </div>
     </div>
