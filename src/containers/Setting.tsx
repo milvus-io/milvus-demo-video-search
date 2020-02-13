@@ -11,6 +11,7 @@ import { baseColor } from "../utils/color";
 import Logo from "./Logo.svg";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
+// params
 const TITLE = 'Video Search By Image'
 const SUB_TITLE = 'demo use';
 const PLACEHOLDER: any = {
@@ -24,6 +25,13 @@ const ButtonLabel: any = {
   insert: 'Insert',
   search: "Search"
 };
+const initInsertParams = {
+  // Name: 'dt.flv',
+  // Alias: 'test, aha',
+  // Path: '/test1'
+}
+// const initSearchParams = `http://139.198.21.118:9000/test1/output1.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20200213%2F%2Fs3%2Faws4_request&X-Amz-Date=20200213T061424Z&X-Amz-Expires=432000&X-Amz-SignedHeaders=host&X-Amz-Signature=31f9bb88c021a9c1d5413400e9eaa94e8a71ca4778eb3c1c50bd18d2d1afa3b6`
+const initSearchParams = '';
 const Setting = (props: any) => {
   const isMobile = !useMediaQuery("(min-width:1000px)");
   const useStyles = makeStyles({
@@ -156,12 +164,8 @@ const Setting = (props: any) => {
   const { upload, search, queryStatus } = useContext(queryContext);
   const { setResults, loading, setLoading } = props;
   const classes = useStyles({});
-  const [insertParams, setInsertParams]: any = useState({
-    Name: 'dt.flv',
-    Alias: 'test, aha',
-    Path: '/test1'
-  })
-  const [searchParams, setSearchParams]: any = useState('http://139.198.21.118:9000/tmp/65f12e7d-6860-476b-930b-1bd5e3acd60a/output19.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20200213%2F%2Fs3%2Faws4_request&X-Amz-Date=20200213T022451Z&X-Amz-Expires=432000&X-Amz-SignedHeaders=host&X-Amz-Signature=fc18e1e93024a1b663e927c887b898bee8da70024a16f8d103a684cf888a1e68')
+  const [insertParams, setInsertParams]: any = useState(initInsertParams)
+  const [searchParams, setSearchParams]: any = useState(initSearchParams)
   const [process, setProcess]: any = useState({ Stage: '', Percent: 0 })
   const keepQueryStatus = async (id: string) => {
     !loading && setLoading(true)
