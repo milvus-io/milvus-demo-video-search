@@ -299,8 +299,8 @@ const Setting = (props: any) => {
       <Button classes={{ root: classes.insertButton }} startIcon={<CloudUploadIcon />} variant="contained" onClick={() => _upLoadVideo(insertParams)}>{ButtonLabel.insert}</Button>
       {loading && (
         <div>
-          <h3 className={classes.Stage}>{`Extract:  `}{process.Stage === 'extract' ? <span>{`${(process.Percent * 100).toFixed(2)}%`}</span> : <DoneIcon />}</h3>
-          {process.Stage === 'predict' && <h3 className={classes.Stage}>{`predict:  `}<span>{`${(process.Percent * 100).toFixed(2)}%`}</span></h3>}
+          <h3 className={classes.Stage}><span style={{ marginRight: '20px' }}>{`Extract:`}</span>{process.Stage === 'extract' ? <span>{`${(process.Percent * 100).toFixed(2)}%`}</span> : <DoneIcon />}</h3>
+          {process.Stage === 'predict' && <h3 className={classes.Stage}><span style={{ marginRight: '20px' }}>{`predict:`}</span><span>{`${(process.Percent * 100).toFixed(2)}%`}</span></h3>}
           <LinearProgress value={process.Percent || 0.01} />
         </div>
       )}

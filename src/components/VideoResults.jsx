@@ -1,5 +1,4 @@
 import React, { useState, useCallback } from "react";
-import {Motion, spring} from 'react-motion';
 // import TodoList from './TestPage'
 import { makeStyles } from "@material-ui/core/styles";
 import Carousel, { Modal, ModalGateway } from "react-images";
@@ -62,9 +61,6 @@ const SearchResults = props => {
       <div className={classes.title}>
         <h3 className={classes.title}>{TITLE}</h3>
       </div>
-      <Motion defaultStyle={{ x: 0 }} style={{ x: spring(10) }}>
-        {value => <div>{value.x}</div>}
-      </Motion>
       {!isMobile && (
         <ResultHeader
           title={"Picture"}
