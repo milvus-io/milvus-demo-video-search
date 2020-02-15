@@ -1,347 +1,80 @@
-import React, { useState, useContext } from "react";
-import { queryContext } from "../contexts/QueryContext";
+import React, { useState } from "react";
+import clsx from "clsx"
 import { makeStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
-import SearchIcon from "@material-ui/icons/Search";
-import CloudUploadIcon from "@material-ui/icons/CloudUpload"
-import DoneIcon from "@material-ui/icons/Done"
-import Button from "@material-ui/core/Button";
-import LinearProgress from "@material-ui/core/LinearProgress";
-import { baseColor } from "../utils/color";
-import Logo from "./Logo.svg";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
-// params
-const TITLE = 'Video Search By Image'
-const SUB_TITLE = 'demo use';
-const PLACEHOLDER: any = {
-  name: "please input video's name",
-  alias: "please input video's alias, split with ', '",
-  path: "please input video'path",
-  image: "please input image's path, split with ', '",
-  imageDes: 'please input image description'
-};
-const ButtonLabel: any = {
-  insert: 'Insert',
-  search: "Search"
-};
-const initInsertParams = {
-  // Name: 'dt.flv',
-  // Alias: 'test, aha',
-  // Path: '/test1'
-}
-// const initSearchParams = `http://139.198.21.118:9000/test1/output1.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20200213%2F%2Fs3%2Faws4_request&X-Amz-Date=20200213T061424Z&X-Amz-Expires=432000&X-Amz-SignedHeaders=host&X-Amz-Signature=31f9bb88c021a9c1d5413400e9eaa94e8a71ca4778eb3c1c50bd18d2d1afa3b6`
-const initSearchParams = '';
+// Consts
+const images = [
+  // 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTsQNVrDiy1hIUWpICIaziek6B8JlvXWLmWXdIPCIIu6UpZ0J3N',
+  // 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTwkc-7DUmV9xKxJ8K2w3MWZ96-vYfgrvf0-R6n3Kn2o5cNRpYS',
+  // 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQeYoj5jxWBFDJ5mmz6JgJt2XiVDgdJG5jGZISjmh7lKzMr23mc',
+  'https://lh3.googleusercontent.com/proxy/VokvQdHH9fR8COZUOrdnFPYIB63QiPXeR8Bo4leF1mPCDkWWCJF12mb6lH_m5ENPIditgcm8h_KQpwkaRupTkHawEEWo4QeSxb_ClinrH4YlxDUJcO4',
+  'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRGSpZe-XshtZ7V7d4XDaPX3tesALsvATRuANWm_u5SE_iU59C3',
+  'https://img95.699pic.com/photo/50053/0716.jpg_wh300.jpg',
+  'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcSAjGs5INITjQag0tZllABICCMuvfNT2xFEPXeAcb2CrNpLh-yq',
+  'https://up.enterdesk.com/edpic_360_360/90/0b/79/900b79210005e9d0216f2cffc9a4017c.jpg',
+  'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQhPDRWlDb8TkK8ebwCSmyxojTDlKSK9_kqsZV5H9d3dqiMS2zi',
+  'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcSfVQQtRw0p7MqTtmh6ZozJK257gpsebIeC3VEf-UDz4eQ2DCMa',
+]
+
 const Setting = (props: any) => {
   const isMobile = !useMediaQuery("(min-width:1000px)");
   const useStyles = makeStyles({
     setting: {
-      display: "flex",
-      flexDirection: "column",
-      minWidth: isMobile ? "auto" : "400px",
-      padding: isMobile ? "20px" : "60px 20px",
+      position: "relative",
+      minWidth: isMobile ? "auto" : "200px",
+      padding: isMobile ? "20px" : "0 20px",
       borderWidth: "1px",
-      backgroundColor: "#1F2023",
       color: "#E4E4E6",
-      overflowY: "auto"
+      overflowY: "auto",
+      backgroundColor: "#1F2023",
     },
-    header: {
-      marginBottom: "30px",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center"
+    imageWrapper: {
+      width: "100%",
+      marginBottom: '5px',
+      opacity: .5,
+      borderRadius: '10px'
     },
-    config: {
-      fontSize: "24px",
-      color: "#FAFAFA"
+    selectedImage: {
+      border: 'solid 1px #e8e8f5',
+      opacity: 1
     },
-    clear: {
-      color: baseColor,
-      fontSize: "18px",
-      cursor: "pointer"
+    topCover: {
+      position: 'fixed',
+      left: 0,
+      top: `69.3px`,
+      minWidth: '240px',
+      height: '12%',
+      pointerEvents: 'none',
+      background: `linear-gradient( #1F2023,rgba(255,255,255,0))`,
     },
-    Stage: {
-      marginBottom: "10px",
-      display: 'flex',
-      justifyContent: 'start',
-      alignItems: 'center'
+    bottomCover: {
+      position: 'fixed',
+      left: 0,
+      bottom: `0`,
+      minWidth: '240px',
+      height: '12%',
+      pointerEvents: 'none',
+      background: `linear-gradient(rgba(255,255,255,0),#1F2023)`,
+
     },
-    counts: {
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      marginBottom: "30px",
-      color: "#FAFAFA"
-    },
-    currTotal: {
-      fontSize: "12px"
-    },
-    setPath: {
-      display: "flex",
-      justifyContent: "start",
-      alignItems: "center",
-      marginBottom: "60px"
-    },
-    MolecularInput: {
-      color: "blue !important"
-    },
-    customInput: {
-      margin: "0 20px 0 0 !important",
-      color: "blue !important"
-    },
-    customFab: {
-      color: "#fff",
-      backgroundColor: baseColor,
-      width: "36px",
-      height: "36px",
-      "&:hover": {
-        backgroundColor: baseColor
-      }
-    },
-    customDeleteFab: {
-      position: "absolute",
-      top: "5px",
-      right: "5px",
-      color: "#fff",
-      backgroundColor: "#666769",
-      width: "24px",
-      height: "24px",
-      minHeight: "0px",
-      "&:hover": {
-        backgroundColor: "#666769"
-      }
-    },
-    customDelete: {
-      color: "#A7A7AF",
-      width: "18px",
-      height: "18px"
-    },
-    customIcon: {
-      color: "#fff",
-      backgroundColor: baseColor,
-      width: "20px",
-      height: "20px"
-    },
-    upload: {
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center"
-    },
-    benchImage: {
-      width: "400px",
-      height: "250px",
-      position: "relative"
-    },
-    dropzoneContainer: {
-      backgroundColor: "transparent",
-      width: "250px",
-      height: "250px",
-      borderRadius: "10px",
-      border: "solid .5px #C8C8C8",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center"
-    },
-    dropzoneText: {
-      fontSize: "14px",
-      color: "#B3B4B5",
-      marginBottom: "30px"
-    },
-    notchedOutline: {
-      borderWidth: ".5px",
-      borderColor: "#838385 !important"
-    },
-    formLabel: {
-      color: "#fff"
-    },
-    controlLabel: {
-      color: "#838385"
-    },
-    insertButton: {
-      marginBottom: '30px',
-    }
   });
-  const { upload, search, queryStatus } = useContext(queryContext);
-  const { setResults, loading, setLoading } = props;
+
+  const [selectImag, setImage] = useState(images[Math.ceil(images.length / 2)]);
   const classes = useStyles({});
-  const [insertParams, setInsertParams]: any = useState(initInsertParams)
-  const [searchParams, setSearchParams]: any = useState(initSearchParams)
-  const [process, setProcess]: any = useState({ Stage: '', Percent: 0 })
-  const keepQueryStatus = async (id: string) => {
-    !loading && setLoading(true)
-    queryStatus({ id }).then((res: any) => {
-      const shoudKeepQuery = res && res.data && (res.data.Stage === 'extract' || (res.data.Stage === 'predict' && res.data.Percent < 1))
-      // console.log(res.data)
-      if (shoudKeepQuery) {
-        setProcess(res.data);
-        setTimeout(() => {
-          keepQueryStatus(id)
-        }, 1000)
-      } else {
-        setLoading(false);
-        setProcess({ Stage: '', Percent: 0 })
-      }
-    })
-  }
-  const _parseStrToArr = (str: string) => {
-    return str.split(',')
-      .filter((str: string) => !!str)
-      .map((str: string) => str.trim())
-  }
-  const _upLoadVideo = async (params: any) => {
-    const parsedAlias = _parseStrToArr(params.Alias)
-    var bodyFormData = new FormData();
-    bodyFormData.set('Name', params.Name);
-    bodyFormData.set('Path', params.Path);
-    parsedAlias.forEach((alias: string) => bodyFormData.set('Alias', alias))
-
-    upload(bodyFormData).then((res: any) => {
-      if (res && res.status === 200) {
-        const { id } = res.data;
-        keepQueryStatus(id)
-      }
-    })
-  }
-
-  const _search = (params: any) => {
-    search(params).then((res: any) => {
-      const { status, data } = res || {};
-      if (status === 200) {
-        setResults(data)
-      }
-    });
-  };
 
   return (
     <div className={classes.setting}>
-      <div className={classes.header}>
-        <img src={Logo} width="150px" alt="logo" />
-        <h3 style={{ marginBottom: "10px" }}>{TITLE}</h3>
-        {isMobile ? "" : <p>{SUB_TITLE}</p>}
-      </div>
-      <TextField
-        classes={{ root: classes.MolecularInput }}
-        label=""
-        variant="outlined"
-        value={insertParams.Name || ""}
-        onChange={(e: any) => setInsertParams({ ...insertParams, Name: e.target.value })}
-        InputLabelProps={{
-          shrink: true,
-          classes: {
-            root: classes.controlLabel,
-            focused: classes.controlLabel
-          }
-        }}
-        margin="normal"
-        InputProps={{
-          style: {
-            textAlign: "left",
-            width: isMobile ? "auto" : "400px",
-            height: "40px"
-          },
-          classes: {
-            notchedOutline: classes.notchedOutline,
-            root: classes.formLabel
-          },
-          placeholder: PLACEHOLDER.name,
-        }}
-      />
-      <TextField
-        classes={{ root: classes.MolecularInput }}
-        label=""
-        variant="outlined"
-        value={insertParams.Alias || ""}
-        onChange={(e: any) => setInsertParams({ ...insertParams, Alias: e.target.value })}
-        InputLabelProps={{
-          shrink: true,
-          classes: {
-            root: classes.controlLabel,
-            focused: classes.controlLabel
-          }
-        }}
-        margin="normal"
-        InputProps={{
-          style: {
-            textAlign: "left",
-            width: isMobile ? "auto" : "400px",
-            height: "40px"
-          },
-          classes: {
-            notchedOutline: classes.notchedOutline,
-            root: classes.formLabel
-          },
-          placeholder: PLACEHOLDER.alias,
-        }}
-      />
-      <TextField
-        classes={{ root: classes.MolecularInput }}
-        label=""
-        variant="outlined"
-        value={insertParams.Path || ""}
-        onChange={(e: any) => setInsertParams({ ...insertParams, Path: e.target.value })}
-        InputLabelProps={{
-          shrink: true,
-          classes: {
-            root: classes.controlLabel,
-            focused: classes.controlLabel
-          }
-        }}
-        margin="normal"
-        InputProps={{
-          style: {
-            textAlign: "left",
-            width: isMobile ? "auto" : "400px",
-            height: "40px"
-          },
-          classes: {
-            notchedOutline: classes.notchedOutline,
-            root: classes.formLabel
-          },
-          placeholder: PLACEHOLDER.path,
-        }}
-      />
-      <Button classes={{ root: classes.insertButton }} startIcon={<CloudUploadIcon />} variant="contained" onClick={() => _upLoadVideo(insertParams)}>{ButtonLabel.insert}</Button>
-      {loading && (
-        <div>
-          <h3 className={classes.Stage}><span style={{ marginRight: '20px' }}>{`Extract:`}</span>{process.Stage === 'extract' ? <span>{`${(process.Percent * 100).toFixed(2)}%`}</span> : <DoneIcon />}</h3>
-          {process.Stage === 'predict' && <h3 className={classes.Stage}><span style={{ marginRight: '20px' }}>{`predict:`}</span><span>{`${(process.Percent * 100).toFixed(2)}%`}</span></h3>}
-          <LinearProgress value={process.Percent || 0.01} />
-        </div>
-      )}
-
-      <TextField
-        classes={{ root: classes.MolecularInput }}
-        label=""
-        variant="outlined"
-        value={searchParams || ""}
-        onChange={(e: any) => setSearchParams(e.target.value)}
-        InputLabelProps={{
-          shrink: true,
-          classes: {
-            root: classes.controlLabel,
-            focused: classes.controlLabel
-          }
-        }}
-        margin="normal"
-        InputProps={{
-          style: {
-            textAlign: "left",
-            width: isMobile ? "auto" : "400px",
-            height: "40px"
-          },
-          classes: {
-            notchedOutline: classes.notchedOutline,
-            root: classes.formLabel
-          },
-          placeholder: PLACEHOLDER.image,
-          onKeyPress: (e: any) => {
-            if (e.key === "Enter") {
-              // _search({ topK, Molecular });
-            }
-          }
-        }}
-      />
-      <Button startIcon={<SearchIcon />} variant="contained" onClick={() => { _search({ file: searchParams }) }}>{ButtonLabel.search}</Button>
+      {images.map((image: any) => {
+        const isSelected = image === selectImag;
+        return (
+          <div className={clsx(classes.imageWrapper, isSelected ? classes.selectedImage : "")} onClick={() => setImage(image)}>
+            <img style={{ width: '100%', borderRadius: '10px' }} src={image} alt="" />
+          </div>
+        )
+      })}
+      <div className={classes.topCover}></div>
+      <div className={classes.bottomCover}></div>
     </div>
   );
 };

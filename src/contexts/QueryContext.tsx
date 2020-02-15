@@ -18,6 +18,8 @@ const useStyles = makeStyles({
     marginRight: "10px"
   }
 });
+
+// const isMock = false;
 const QueryProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const classes = useStyles();
   const [status, setStatus]: any = useState({ isShow: false });
