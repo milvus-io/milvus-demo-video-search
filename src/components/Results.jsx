@@ -66,6 +66,14 @@ const Results = props => {
     const rest = shuffle(testRes.slice(1, testRes.length));
     setTestRes([first, ...rest])
     // }, 1000)
+    const interval = setInterval(() => {
+      const first = testRes[0];
+      const rest = shuffle(testRes.slice(1, testRes.length));
+      setTestRes([first, ...rest])
+    }, 3000)
+    return () => {
+      clearInterval(interval)
+    }
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [results]);
   return (
