@@ -32,7 +32,7 @@ const genTestsRes = n => {
   for (let i = 0; i < n; i++) {
     res.push(
       {
-        "distance": (distance - (i + 1))/100,
+        "distance": (distance - (i + 1)) / 100,
         "id": `${1581500222911524000}_${i}`,
         "image": images[i % images.length],
         key: i + 1
@@ -56,16 +56,18 @@ const Results = props => {
     },
   });
   const classes = useStyles({});
+  const { results } = props;
   // const { results = [] } = props;
   const [testRes, setTestRes] = useState(genTestsRes(100))
 
   useEffect(() => {
-    setTimeout(() => {
-      const first = testRes[0];
-      const rest = shuffle(testRes.slice(1, testRes.length));
-      setTestRes([first, ...rest])
-    }, 3000)
-  }, [testRes]);
+    // setTimeout(() => {
+    const first = testRes[0];
+    const rest = shuffle(testRes.slice(1, testRes.length));
+    setTestRes([first, ...rest])
+    // }, 1000)
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [results]);
   return (
     <div className={classes.root}>
       <div className='root-container'>
