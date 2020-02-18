@@ -70,7 +70,7 @@ const Results = props => {
       const first = testRes[0];
       const rest = shuffle(testRes.slice(1, testRes.length));
       setTestRes([first, ...rest])
-    }, 3000)
+    }, 5000)
     return () => {
       clearInterval(interval)
     }
