@@ -29,13 +29,14 @@ const QueryProvider: FC<{ children: ReactNode }> = ({ children }) => {
   };
 
   const hideNote = () => setStatus({ isShow: false });
+
   const errorParser = (e: any) => {
     console.log(e);
   };
   const search = async (params: any) => {
     const url = URL.SEARCH;
-    var bodyFormData = new FormData()
-    bodyFormData.set('file', params.file);
+    const bodyFormData = new FormData()
+    bodyFormData.set('file', params);
     return await axiosInstance.post(url, bodyFormData).catch(errorParser);
   };
   const upload = async (params: any) => {
@@ -49,14 +50,13 @@ const QueryProvider: FC<{ children: ReactNode }> = ({ children }) => {
     return await axiosInstance.post(url, bodyFormData).catch(errorParser);
   }
 
-
   return (
     <Provider
       value={{
+        search,
         upload,
         process,
         queryStatus,
-        search,
         showNote,
         hideNote,
         status

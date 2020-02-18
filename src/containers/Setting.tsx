@@ -35,20 +35,20 @@ const Setting = (props: any) => {
       background: `linear-gradient( #1F2023,rgba(255,255,255,0))`,
     },
   });
-  const { images, setResults, selectImag, setImage } = props;
+  const { searchParams, setSelectedImage } = props;
+  const { history, curr } = searchParams
   const classes = useStyles({});
 
   const changeImg = (image: any) => {
-    setImage(image)
-    setResults([Math.random()])
+    setSelectedImage(image)
   }
   return (
     <div className={classes.setting}>
-      {images.map((image: any,index:number) => {
-        const isSelected = image === selectImag;
+      {history.map((image: any, index: number) => {
+        const isSelected = image === curr;
         return (
           <div key={index} className={clsx(classes.imageWrapper, isSelected ? classes.selectedImage : "")} onClick={() => changeImg(image)}>
-            <img style={{ width: '100%'}} src={image} alt="" />
+            <img style={{ width: '100%' }} src={image} alt="" />
           </div>
         )
       })}
