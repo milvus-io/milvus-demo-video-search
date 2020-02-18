@@ -7,8 +7,9 @@
 .img-container {
   width: 100%;
   display: block;
-  margin-bottom: 2px;
   position: relative;
+  opacity:0.75;
+
 }
 
 .gif_player img {
@@ -21,7 +22,7 @@
   left: 0;
   top: 0;
   background: transparent;
-  z-index: 1000;
+  z-index: 10;
   padding: 10px;
   color: #fff;
 }
@@ -36,5 +37,5 @@ h3 {
 
 .best {
   border: 1px solid rgb(90, 186, 231);
-  border-radius:5px;
+  margin:0 1px 1px 0;
 }
