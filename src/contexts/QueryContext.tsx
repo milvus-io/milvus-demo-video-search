@@ -50,6 +50,11 @@ const QueryProvider: FC<{ children: ReactNode }> = ({ children }) => {
     return await axiosInstance.post(url, bodyFormData).catch(errorParser);
   }
 
+  const queryLibrary = async (params:any)=>{
+    const url = URL.QUERY_LIBRARY;
+    return await axiosInstance.post(url, params).catch(errorParser);
+  }
+
   return (
     <Provider
       value={{
@@ -59,7 +64,8 @@ const QueryProvider: FC<{ children: ReactNode }> = ({ children }) => {
         queryStatus,
         showNote,
         hideNote,
-        status
+        status,
+        queryLibrary
       }}
     >
       {children}

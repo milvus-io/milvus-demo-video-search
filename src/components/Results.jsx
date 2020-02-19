@@ -25,10 +25,12 @@ const Results = props => {
   const { results, setResults } = props;
   useEffect(() => {
     const interval = setInterval(() => {
-      const first = results[0];
-      const rest = shuffle(results.slice(1, results.length));
-      setResults([first, ...rest])
-    }, 5000)
+      if (results.length) {
+        const first = results[0];
+        const rest = shuffle(results.slice(1, results.length));
+        setResults([first, ...rest])
+      }
+    }, 50000)
     return () => {
       clearInterval(interval)
     }
