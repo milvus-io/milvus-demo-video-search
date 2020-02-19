@@ -22,13 +22,18 @@ const useStyles = makeStyles({
 // const isMock = false;
 const QueryProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const classes = useStyles();
-  const [status, setStatus]: any = useState({ isShow: false });
+  // current page : search | library
+  const [page, setPage] = useState<string>('search');
+  // page status : upload-img | search | show-search | upload-library| show-library
+  const [pageStatus, setPageStatus] = useState<string>('show-search');
+  // note status 
+  const [noteStatus, setNoteStatus] = useState<any>({ show: false, content: '' })
 
   const showNote = (content: string) => {
-    setStatus({ isShow: true, content });
+    setNoteStatus({ show: true, content });
   };
 
-  const hideNote = () => setStatus({ isShow: false });
+  const hideNote = () => setNoteStatus({ show: false, content: '' });
 
   const errorParser = (e: any) => {
     console.log(e);
@@ -49,8 +54,7 @@ const QueryProvider: FC<{ children: ReactNode }> = ({ children }) => {
     bodyFormData.set('id', params.id);
     return await axiosInstance.post(url, bodyFormData).catch(errorParser);
   }
-
-  const queryLibrary = async (params:any)=>{
+  const queryLibrary = async (params: any) => {
     const url = URL.QUERY_LIBRARY;
     return await axiosInstance.post(url, params).catch(errorParser);
   }
@@ -58,20 +62,26 @@ const QueryProvider: FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <Provider
       value={{
+        // querys
         search,
         upload,
         process,
         queryStatus,
+        queryLibrary,
+        // notes
         showNote,
         hideNote,
-        status,
-        queryLibrary
+        // pages
+        page, setPage,
+        pageStatus, setPageStatus,
+        noteStatus,
+        setNoteStatus,
       }}
     >
       {children}
       <Snackbar
         classes={{ root: classes.root }}
-        open={status.isShow}
+        open={noteStatus.show}
         anchorOrigin={{
           vertical: "top",
           horizontal: "center"
@@ -87,7 +97,7 @@ const QueryProvider: FC<{ children: ReactNode }> = ({ children }) => {
             }}
           >
             <ErrorIcon classes={{ root: classes.color }} />
-            <span>{status.content || ""}</span>
+            <span>{noteStatus.content || ""}</span>
           </div>
         }
       ></Snackbar>
