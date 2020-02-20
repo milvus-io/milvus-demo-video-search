@@ -1,6 +1,5 @@
 import React from "react";
-import Search from './containers/Search'
-import Library from './components/Library'
+import RootContainer from './containers/RootContainer'
 import {
   BrowserRouter as Router,
   Switch,
@@ -12,8 +11,7 @@ const App: React.FC = () => {
   return (
     <Router>
       <Switch>
-        <Route exact path="/" component={Search} />
-        <Route path="/library" component={Library} />
+        <Route exact path="/" component={RootContainer} />
       </Switch>
     </Router>
   );

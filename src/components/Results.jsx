@@ -18,8 +18,29 @@ const Results = props => {
       padding: isMobile ? "10px" : "20px",
       display: "flex",
       flexDirection: "column",
-      backgroundColor: "#28292E"
     },
+    container: {
+      width: '100%',
+      columnCount: 5,
+      columnGap: '3px',
+      position: 'relative',
+    },
+    imgWrapper: {
+      width: '100%',
+      display: 'block',
+      position: 'relative',
+      marginBottom:'3px',
+      opacity: 0.75
+    },
+    info: {
+      position: 'absolute',
+      left: 0,
+      top: 0,
+      background: 'transparent',
+      zIndex: 10,
+      padding: '10px',
+      color: '#fff',
+    }
   });
   const classes = useStyles({});
   const { results, setResults } = props;
@@ -38,7 +59,7 @@ const Results = props => {
   }, [results]);
   return (
     <div className={classes.root}>
-      <div className='root-container'>
+      <div className={classes.container}>
         <Flipper flipKey={Math.random()} staggerConfig={{
           default: {
             reverse: false,
@@ -47,9 +68,9 @@ const Results = props => {
         }}>
           {results.map((data, index) => (
             <Flipped key={data.id} flipId={data.id}>
-              <div className={clsx('img-container', index === 0 ? 'best' : '')}>
+              <div className={clsx(classes.imgWrapper, index === 0 ? 'best' : '')}>
                 <GifPlayer gif={data.image} autoplay />
-                <div className='info'>
+                <div className={classes.info}>
                   <h3>{data.key}</h3>
                   <p>{data.distance}</p>
                 </div>

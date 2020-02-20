@@ -1,60 +1,50 @@
-import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { queryContext } from '../contexts/QueryContext'
 import { makeStyles } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
-import { Link } from 'react-router-dom'
-import CircularProgress from "@material-ui/core/CircularProgress"
 import FileDrop from 'react-file-drop';
-import Logo from "../logo.svg";
-import AddCircleIcon from "@material-ui/icons/AddCircle"
-import SearchIcon from "@material-ui/icons/Search"
+import AddIcon from "@material-ui/icons/Add"
 import DeleteIcon from "@material-ui/icons/Delete"
 var GifPlayer = require('react-gif-player')
 
+const _calPercent = ({ percent, stage }) => {
+  return stage === 'predict' ? percent / 2 : 50 + percent / 2
+}
 const Libarary = () => {
-  const { queryLibrary, upload } = useContext(queryContext);
+  const { queryLibrary, pageStatus, setPageStatus, upload, queryStatus } = useContext(queryContext);
   const isMobile = !useMediaQuery("(min-width:1000px)");
+  const [results, setResults] = useState([]);
+  const [selectedID, setSelectedID] = useState('');
+  const [loadingPercent, setLoadingPercent] = useState(0)
+
   const useStyles = makeStyles({
-    nav: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-    },
-    icon: {
-      paddingRight: '30px',
-      color: '#000'
-    },
-    logo: {
-      paddingLeft: '30px',
-    },
-    contentRoot: {
+    root: {
       flexGrow: 1,
       overflowX: "hidden",
       overflowY: "auto",
-      padding: isMobile ? "10px" : "50px",
+      padding: isMobile ? "10px" : "20px",
       display: "flex",
       flexDirection: "column",
-      backgroundColor: "#FAFAFA"
     },
-    uploaderContainer: {
-      position: "absolute",
-      width: "100%",
-      height: "100%",
-      left: "0",
-      top: "0",
-      display: 'flex',
-      justifyContent: 'space-around',
-      alignItems: 'center',
-      zIndex: 1000,
-      background: 'transparent'
+    container: {
+      width: '100%',
+      columnCount: 5,
+      columnGap: '3px',
+      position: 'relative',
     },
-    desc: {
-      flexGrow: 1,
-      textAlign: 'center',
-      paddingTop: '35%',
+    imgWrapper: {
+      width: '100%',
+      display: 'block',
+      position: 'relative',
     },
-    customSearchIcon: {
-      fontSize: '3.5rem',
+    cover: {
+      position: 'absolute',
+      top: 0, right: 0, width: `${100 - loadingPercent}%`, height: '100%',
+      backgroundColor: 'rgba(16, 16, 16, 0.5)',
+    },
+    percent: {
+      position: 'absolute',
+      bottom: '5px', right: '5px',
     },
     selected: {
       border: 'solid 1px red'
@@ -63,35 +53,33 @@ const Libarary = () => {
       color: '#fff',
       background: 'red',
       cursor: 'pointer'
+    },
+    addWrapper: {
+      width: "100%",
+      marginBottom: '3px',
+      height: '15vh',
+      background: 'rgba(255,255,255,0.1)',
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      border: '1px solid rgba(176,176,185,1)',
+      color: '#fff',
+    },
+    dragEnter: {
+      border: '2px solid rgba(63, 156, 209, 1) !important',
+      color: 'rgba(63, 156, 209, 1) !important',
     }
   });
   const classes = useStyles({});
-  const [results, setResults] = useState([]);
-  const [isShowSearchWrapper, setShowSearchWrapper] = useState(false);
-  const [selectedID, setSelectedID] = useState('');
-  const [uploading, setUploading] = useState({ loading: false, percent: 0 })
-
-  const searchWrapper = useRef(null);
-  const percent = useRef(0);
-
-  const showUploader = useCallback((e) => {
-    if (!isShowSearchWrapper) {
-      setShowSearchWrapper(true);
-    }
-    const setClassList = (node) => {
-      if (node) {
-        const target = node || document.createElement('div');
-        target.contains(e.target)
-          ? target.classList.add('selected-wrapper')
-          : target.classList.remove('selected-wrapper');
-      }
-    }
-    setClassList(searchWrapper.current);
-  }, [isShowSearchWrapper])
+  const uploader = useRef(null);
+  const uploaderID = useRef(null);
+  const ImgUploading = useRef("")
 
   const onMouseEnter = (id) => setSelectedID(id)
+  const onMouseLeave = (id) => selectedID === id && setSelectedID("")
   const deleteGif = (id) => {
     setResults(results.filter(result => result.id !== id))
+    // TODO: delete query
   }
   useEffect(() => {
     const query = async () => {
@@ -106,85 +94,102 @@ const Libarary = () => {
   }, [])
 
   useEffect(() => {
+    console.log('bind again', results.length)
+    const _finishUpload = () => {
+      setResults([{ id: uploaderID.current, src: ImgUploading.current }, ...results])
+      setPageStatus('show-library');
+      ImgUploading.current = '';
+      setLoadingPercent(0)
+    }
+    const _keepProcess = async id => {
+      queryStatus(id).then(res => {
+        if (res && res.status === 200) {
+          const percent = _calPercent(res.data);
+          setLoadingPercent(percent);
+          percent === 100
+            ? _finishUpload()
+            : (function () { setLoadingPercent(percent); _keepProcess(id) }())
+        } else {
+          setPageStatus('fail-library')
+        }
+      })
+    }
     const _upload = e => {
+      console.log('xxx droped')
       const file = e.dataTransfer.files[0];
-      console.log(e, file)
       const reader = new FileReader();
       reader.addEventListener("load", function () {
-        setUploading({ loading: true, percent: 0 })
-        const interval = setInterval(() => {
-          if (percent.current + 10 > 100) {
-            clearInterval(interval)
-            setUploading({ loading: false, percent: 0 });
-            setShowSearchWrapper(false);
-            percent.current = 0;
-            setResults([{ id: Math.ceil(Math.random() * 100) + 1000, src: reader.result }, ...results])
+        ImgUploading.current = reader.result;
+        setPageStatus('upload-library');
+        upload(reader.result).then(res => {
+          // TODO: && res.data === ok
+          if (res && res.status === 200) {
+            const id = res.data;
+            uploaderID.current = id;
+            _keepProcess(id);
           } else {
-            percent.current = percent.current + 10;
-            setUploading(uploading => { return { loading: true, percent: uploading.percent + 10 } })
+            setPageStatus('fail-library')
           }
-        }, 500)
+        })
       }, false);
       if (file) {
         reader.readAsDataURL(file);
       }
-
-
     }
-    document.body.addEventListener('dragenter', showUploader)
-    const Search = searchWrapper.current || document.createElement('div');
-    Search.addEventListener('drop', _upload);
+    const Uploader = uploader.current || document.createElement('div');
+    const onMouseEnter = e => {
+      // console.log('xxxx', Uploader)
+      Uploader.classList.add(classes.dragEnter)
+      // console.log(Uploader.classList);
+      return true;
+    }
+    const onMouseLeave = e => { Uploader.classList.remove(classes.dragEnter); return true }
+
+    Uploader.addEventListener('drop', _upload);
+    document.body.addEventListener('dragenter', onMouseEnter);
+    document.body.addEventListener('dragleave', onMouseLeave);
+
     return () => {
-      document.body.removeEventListener('dragenter', showUploader)
-      Search.removeEventListener('drop', _upload);
+      Uploader.removeEventListener('drop', _upload);
+      document.body.removeEventListener('dragenter', onMouseEnter);
+      document.body.removeEventListener('dragleave', onMouseLeave);
     }
     //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isShowSearchWrapper])
+  }, [results])
+
   return (
     <div className={classes.root}>
-      <div className={classes.nav}>
-        <img className={classes.logo} src={Logo} width="150px" alt="logo" />
-        <h3>VIDEO LIBRARY</h3>
-        <Link to='/'><div className={classes.icon} onClick={() => { }}>
-          <SearchIcon />
-        </div>
-        </Link>
-      </div>
-      <div className={classes.contentRoot}>
-        <div className='root-container'>
-          {results.map((data) => {
-            const isSelected = data.id === selectedID;
-            return (
-              <>
-                <div className={`img-container ${isSelected ? classes.selected : ""}`} key={data.id} onMouseEnter={() => onMouseEnter(data.id)}>
-                  <GifPlayer gif={data.src} autoplay />
-                  {isSelected && <div style={{ position: 'absolute', top: 0, right: 0 }}><DeleteIcon classes={{ root: classes.delete }} onClick={() => deleteGif(data.id)} /></div>}
-                </div>
-              </>
-            )
-          })}
-        </div>
-      </div>
-      {isShowSearchWrapper && (
-        <div className={`${classes.uploaderContainer} uploader-container`}>
-          <div className='uploader-wrapper' ref={searchWrapper}>
-            <FileDrop onDrop={() => { }}>
-              <div className={classes.desc}>
-                {uploading.loading ? (
-                  <>
-                    <CircularProgress variant="static" value={uploading.percent} />
-                    <p>{`uploaded ${uploading.percent}%`}</p>
-                  </>)
-                  : <><AddCircleIcon classes={{ root: classes.customSearchIcon }} />
-                    <p>drop here to upload</p></>}
-
+      <div className={classes.container}>
+        {pageStatus === 'upload-library'
+          ? (
+            <div className={classes.imgWrapper} >
+              <GifPlayer gif={ImgUploading.current} autoplay />
+              {loadingPercent < 100 && (
+                <>
+                  <div className={classes.cover} />
+                  <div className={classes.percent}>{`${loadingPercent}%`}</div>
+                </>
+              )}
+            </div>
+          ) : (
+            <FileDrop>
+              <div className={classes.addWrapper} ref={uploader}>
+                <AddIcon />
               </div>
             </FileDrop>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+          )
+        }
+        {results.map((data) => {
+          const isSelected = data.id === selectedID;
+          return (
+            <div className={`${classes.imgWrapper} ${isSelected ? classes.selected : ""}`} key={data.id} onMouseEnter={() => { onMouseEnter(data.id); return true; }} onMouseLeave={() => { onMouseLeave(data.id); return true }}>
+              <GifPlayer gif={data.src} autoplay />
+              {isSelected && <div style={{ position: 'absolute', top: 0, right: 0 }}><DeleteIcon classes={{ root: classes.delete }} onClick={() => deleteGif(data.id)} /></div>}
+            </div>
+          )
+        })}
+      </div>
+    </div>)
 };
 
 export default Libarary;

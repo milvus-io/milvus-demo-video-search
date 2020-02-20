@@ -24,11 +24,15 @@ const QueryProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const classes = useStyles();
   // current page : search | library
   const [page, setPage] = useState<string>('search');
-  // page status : upload-img | search | show-search | upload-library| show-library
+  // page status : upload-img | search | show-search | upload-library| show-library | fail-library
   const [pageStatus, setPageStatus] = useState<string>('show-search');
   // note status 
   const [noteStatus, setNoteStatus] = useState<any>({ show: false, content: '' })
-
+  // searchParams
+  const [searchParams, setSearchParams]: any = useState({
+    history: [],
+    curr: ''
+  })
   const showNote = (content: string) => {
     setNoteStatus({ show: true, content });
   };
@@ -65,7 +69,6 @@ const QueryProvider: FC<{ children: ReactNode }> = ({ children }) => {
         // querys
         search,
         upload,
-        process,
         queryStatus,
         queryLibrary,
         // notes
@@ -76,6 +79,9 @@ const QueryProvider: FC<{ children: ReactNode }> = ({ children }) => {
         pageStatus, setPageStatus,
         noteStatus,
         setNoteStatus,
+
+        searchParams,
+        setSearchParams,
       }}
     >
       {children}
