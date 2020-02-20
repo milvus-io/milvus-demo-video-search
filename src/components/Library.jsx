@@ -36,6 +36,7 @@ const Libarary = () => {
       width: '100%',
       display: 'block',
       position: 'relative',
+      border: 'solid 1px transparent'
     },
     cover: {
       position: 'absolute',
@@ -65,10 +66,6 @@ const Libarary = () => {
       border: '1px solid rgba(176,176,185,1)',
       color: '#fff',
     },
-    dragEnter: {
-      border: '2px solid rgba(63, 156, 209, 1) !important',
-      color: 'rgba(63, 156, 209, 1) !important',
-    }
   });
   const classes = useStyles({});
   const uploader = useRef(null);
@@ -94,7 +91,6 @@ const Libarary = () => {
   }, [])
 
   useEffect(() => {
-    console.log('bind again', results.length)
     const _finishUpload = () => {
       setResults([{ id: uploaderID.current, src: ImgUploading.current }, ...results])
       setPageStatus('show-library');
@@ -115,7 +111,6 @@ const Libarary = () => {
       })
     }
     const _upload = e => {
-      console.log('xxx droped')
       const file = e.dataTransfer.files[0];
       const reader = new FileReader();
       reader.addEventListener("load", function () {
@@ -138,21 +133,19 @@ const Libarary = () => {
     }
     const Uploader = uploader.current || document.createElement('div');
     const onMouseEnter = e => {
-      // console.log('xxxx', Uploader)
-      Uploader.classList.add(classes.dragEnter)
-      // console.log(Uploader.classList);
+      Uploader.classList.add('drag-enter')
       return true;
     }
-    const onMouseLeave = e => { Uploader.classList.remove(classes.dragEnter); return true }
+    const onMouseLeave = e => { Uploader.classList.remove('drag-enter'); return true }
 
     Uploader.addEventListener('drop', _upload);
-    document.body.addEventListener('dragenter', onMouseEnter);
-    document.body.addEventListener('dragleave', onMouseLeave);
+    Uploader.addEventListener('dragenter', onMouseEnter);
+    Uploader.addEventListener('dragleave', onMouseLeave);
 
     return () => {
       Uploader.removeEventListener('drop', _upload);
-      document.body.removeEventListener('dragenter', onMouseEnter);
-      document.body.removeEventListener('dragleave', onMouseLeave);
+      Uploader.removeEventListener('dragenter', onMouseEnter);
+      Uploader.removeEventListener('dragleave', onMouseLeave);
     }
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [results])

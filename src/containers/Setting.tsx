@@ -6,6 +6,7 @@ import clsx from "clsx"
 import { makeStyles } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import DeleteIcon from "@material-ui/icons/Delete"
+import './Setting.css'
 
 // const Images = [
 //   'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRGSpZe-XshtZ7V7d4XDaPX3tesALsvATRuANWm_u5SE_iU59C3',
@@ -105,9 +106,9 @@ const Setting = (props: any) => {
         reader.readAsDataURL(file);
       }
     }
-    const onDragEnter = () => { Uploader.classList.add(classes.dragEnter) };
-    const onDragLeave = () => Uploader.classList.remove(classes.dragEnter);
     const Uploader = uploader.current || document.createElement('div');
+    const onDragEnter = () => { Uploader.classList.add('drag-enter') };
+    const onDragLeave = () => { Uploader.classList.remove('drag-enter'); }
     Uploader.addEventListener('dragenter', onDragEnter)
     Uploader.addEventListener('dragleave', onDragLeave)
     Uploader.addEventListener('drop', _addSearchImg);
