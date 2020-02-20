@@ -82,7 +82,10 @@ const Setting = (props: any) => {
       // TODO: && res.data === ok
       if (res && res.status === 200) {
         setPageStatus('show-search')
-        setResults(res.data)
+        setResults([]);
+        setTimeout(()=>{
+          setResults(res.data)
+        },200)
       } else {
         setPageStatus('fail-search')
       }
