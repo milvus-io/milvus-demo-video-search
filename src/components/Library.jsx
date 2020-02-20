@@ -10,6 +10,7 @@ var GifPlayer = require('react-gif-player')
 const _calPercent = ({ percent, stage }) => {
   return stage === 'predict' ? percent / 2 : 50 + percent / 2
 }
+// TODO: upload not work when upload once
 const Libarary = () => {
   const { queryLibrary, pageStatus, setPageStatus, upload, queryStatus } = useContext(queryContext);
   const isMobile = !useMediaQuery("(min-width:1000px)");
@@ -72,7 +73,7 @@ const Libarary = () => {
   const uploaderID = useRef(null);
   const ImgUploading = useRef("")
 
-  const onMouseEnter = (id) => setSelectedID(id)
+  const onMouseOver = (id) => setSelectedID(id)
   const onMouseLeave = (id) => selectedID === id && setSelectedID("")
   const deleteGif = (id) => {
     setResults(results.filter(result => result.id !== id))
@@ -92,10 +93,10 @@ const Libarary = () => {
 
   useEffect(() => {
     const _finishUpload = () => {
-      setResults([{ id: uploaderID.current, src: ImgUploading.current }, ...results])
       setPageStatus('show-library');
       ImgUploading.current = '';
       setLoadingPercent(0)
+      setResults([{ id: uploaderID.current, src: ImgUploading.current }, ...results])
     }
     const _keepProcess = async id => {
       queryStatus(id).then(res => {
@@ -119,7 +120,7 @@ const Libarary = () => {
         upload(reader.result).then(res => {
           // TODO: && res.data === ok
           if (res && res.status === 200) {
-            const id = res.data;
+            const id = res.data + Math.random().toString();
             uploaderID.current = id;
             _keepProcess(id);
           } else {
@@ -132,23 +133,21 @@ const Libarary = () => {
       }
     }
     const Uploader = uploader.current || document.createElement('div');
-    const onMouseEnter = e => {
+    const _onMouseEnter = e => {
       Uploader.classList.add('drag-enter')
       return true;
     }
-    const onMouseLeave = e => { Uploader.classList.remove('drag-enter'); return true }
-
+    const _onMouseLeave = e => { Uploader.classList.remove('drag-enter'); return true }
     Uploader.addEventListener('drop', _upload);
-    Uploader.addEventListener('dragenter', onMouseEnter);
-    Uploader.addEventListener('dragleave', onMouseLeave);
-
+    Uploader.addEventListener('dragenter', _onMouseEnter);
+    Uploader.addEventListener('dragleave', _onMouseLeave);
     return () => {
       Uploader.removeEventListener('drop', _upload);
-      Uploader.removeEventListener('dragenter', onMouseEnter);
-      Uploader.removeEventListener('dragleave', onMouseLeave);
+      Uploader.removeEventListener('dragenter', _onMouseEnter);
+      Uploader.removeEventListener('dragleave', _onMouseLeave);
     }
     //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [results])
+  }, [results, setResults])
 
   return (
     <div className={classes.root}>
@@ -175,7 +174,7 @@ const Libarary = () => {
         {results.map((data) => {
           const isSelected = data.id === selectedID;
           return (
-            <div className={`${classes.imgWrapper} ${isSelected ? classes.selected : ""}`} key={data.id} onMouseEnter={() => { onMouseEnter(data.id); return true; }} onMouseLeave={() => { onMouseLeave(data.id); return true }}>
+            <div className={`${classes.imgWrapper} ${isSelected ? classes.selected : ""}`} key={data.id} onMouseOver={() => { onMouseOver(data.id); return true; }} onMouseLeave={() => { onMouseLeave(data.id); return true }}>
               <GifPlayer gif={data.src} autoplay />
               {isSelected && <div style={{ position: 'absolute', top: 0, right: 0 }}><DeleteIcon classes={{ root: classes.delete }} onClick={() => deleteGif(data.id)} /></div>}
             </div>
