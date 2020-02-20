@@ -62,12 +62,12 @@ const Results = props => {
   return (
     <div className={classes.root}>
       <div className={classes.container}>
-        <Flipper flipKey={Math.random()} staggerConfig={{
+        {/* <Flipper flipKey={Math.random()} staggerConfig={{
           default: {
             reverse: false,
             speed: .001
           },
-        }}>
+        }}> */}
         <TransitionGroup>
           {results.map((data, index) => (
             <CSSTransition
@@ -76,7 +76,7 @@ const Results = props => {
               in={!!results.length}
               unmountOnExit
               classNames="transition-image">
-              <Flipped key={data.id} flipId={data.id}>
+              {/* <Flipped key={data.id} flipId={data.id}> */}
               <div className={clsx(classes.imgWrapper, index === 0 ? 'best' : '')}>
                 <GifPlayer gif={data.image} autoplay />
                 <div className={classes.info}>
@@ -84,11 +84,11 @@ const Results = props => {
                   <p>{data.distance}</p>
                 </div>
               </div>
-              </Flipped>
+              {/* </Flipped> */}
             </CSSTransition>
           ))}
         </TransitionGroup>
-        </Flipper>
+        {/* </Flipper> */}
       </div>
     </div>
   );

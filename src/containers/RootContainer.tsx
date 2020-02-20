@@ -65,7 +65,7 @@ const RootContainer: React.FC = () => {
         {pageStatus === 'fail-search' && <h3>SEARCH FAIL</h3>}
         {pageStatus === 'upload-library' && <h3>UPLOADING...</h3>}
         {pageStatus === 'show-library' && <h3>10000 VIDEOS IN LIBRARY</h3>}
-        <div className={classes.pageSwitcher} onClick={() => { setPage(page === 'search' ? 'library' : 'search'); setPageStatus(page==='search'?'show-library':'show-search'); }}>
+        <div className={classes.pageSwitcher} onClick={() => { setPage(page === 'search' ? 'library' : 'search'); setPageStatus(page === 'search' ? 'show-library' : 'show-search'); }}>
           <div className={page === 'search' ? classes.selectedWrapper : classes.noneSelectedWrapper}><SearchIcon /></div>
           <div className={page === 'library' ? classes.selectedWrapper : classes.noneSelectedWrapper}><SettingsIcon /></div>
         </div>

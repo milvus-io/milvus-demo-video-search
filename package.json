@@ -24,6 +24,7 @@
     "react-gif-player": "^0.4.2",
     "react-icons": "^3.9.0",
     "react-images": "^1.0.0",
+    "react-move": "^6.1.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.3.0",
     "react-transition-group": "^4.3.0",

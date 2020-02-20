@@ -5,7 +5,7 @@ const SearchPage: React.FC = () => {
   const [results, setResults]: any = useState([]);
   return (
     <>
-      <Setting setResults={setResults} />
+      <Setting setResults={setResults}  />
       <Results results={results} setResults={setResults} />
     </>
   );
