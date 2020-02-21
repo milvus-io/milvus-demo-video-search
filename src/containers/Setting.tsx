@@ -66,7 +66,7 @@ const Setting = (props: any) => {
     setPageStatus('search');
     search(imgSrc).then((res: any) => {
       // TODO: && res.data === ok
-      console.log(res);
+      // console.log(res);
       if (res && res.status === 200) {
         setPageStatus('show-search')
         // setResults([]);

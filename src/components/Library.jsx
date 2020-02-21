@@ -159,24 +159,25 @@ const Libarary = () => {
   return (
     <div className={classes.root}>
       <div className={classes.container}>
-        {pageStatus === 'upload-library'
-          ? (
-            <div className={classes.imgWrapper} >
-              <GifPlayer gif={ImgUploading.current} autoplay />
-              {loadingPercent < 100 && (
-                <>
-                  <div className={classes.cover} />
-                  <div className={classes.percent}>{`${loadingPercent}%`}</div>
-                </>
-              )}
-            </div>
-          ) : (
-            <FileDrop>
-              <div className={classes.addWrapper} ref={uploader}>
-                <AddIcon />
+        {
+          pageStatus === 'upload-library'
+            ? (
+              <div className={classes.imgWrapper} >
+                <GifPlayer gif={ImgUploading.current} autoplay />
+                {loadingPercent < 100 && (
+                  <>
+                    <div className={classes.cover} />
+                    <div className={classes.percent}>{`${loadingPercent}%`}</div>
+                  </>
+                )}
               </div>
-            </FileDrop>
-          )
+            ) : (
+              <FileDrop>
+                <div className={classes.addWrapper} ref={uploader}>
+                  <AddIcon />
+                </div>
+              </FileDrop>
+            )
         }
         <FlipMove duration={500}>
           {results.map((data) => {
