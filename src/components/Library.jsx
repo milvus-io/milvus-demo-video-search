@@ -19,11 +19,6 @@ const Libarary = () => {
   const [loadingPercent, setLoadingPercent] = useState(0)
 
   const useStyles = makeStyles({
-    content: {
-      display: isMobile ? 'block' : "flex",
-      flexGrow: 1,
-      height: 'calc(100% - 50px)',
-    },
     root: {
       flexGrow: 1,
       overflowX: "hidden",
@@ -155,8 +150,6 @@ const Libarary = () => {
   }, [results, setResults])
 
   return (
-    <div className={classes.content}>
-
     <div className={classes.root}>
       <div className={classes.container}>
         {pageStatus === 'upload-library'
@@ -188,7 +181,6 @@ const Libarary = () => {
           )
         })}
       </div>
-    </div>
     </div>)
 };
 

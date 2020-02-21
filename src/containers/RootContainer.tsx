@@ -1,6 +1,4 @@
 import React, { useContext } from "react";
-// import Slide from '@material-ui/core/Slide';
-import Fade from '@material-ui/core/Fade';
 import { makeStyles } from "@material-ui/core/styles";
 import { queryContext } from "../contexts/QueryContext";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
@@ -13,8 +11,6 @@ import { CSSTransition, SwitchTransition } from "react-transition-group"
 
 const getTitle = (pageStatus: string) => {
   switch (pageStatus) {
-    case 'upload-img':
-      return 'UPLOADING...'
     case 'upload-img':
       return 'UPLOADING...'
     case 'search':
@@ -46,8 +42,8 @@ const RootContainer: React.FC = () => {
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      color: '#fff',
       backgroundColor: "#1F2023",
+      color: '#fff'
     },
     logo: {
       paddingLeft: '30px',
@@ -75,6 +71,7 @@ const RootContainer: React.FC = () => {
     content: {
       display: isMobile ? 'block' : "flex",
       flexGrow: 1,
+      backgroundColor: "#1F2023",
       height: 'calc(100% - 50px)',
     }
   });
@@ -89,14 +86,13 @@ const RootContainer: React.FC = () => {
           <div className={page === 'library' ? classes.selectedWrapper : classes.noneSelectedWrapper}><SettingsIcon /></div>
         </div>
       </div>
-      {/* <div className={classes.content}> */}
-        <Fade in={page==='search'} >
-          <Search />
-        </Fade>
-        {/* <Slide in={page !== 'search'} direction="right" mountOnEnter unmountOnExit>
-          <Library />
-        </Slide> */}
-      {/* </div> */}
+      <div className={classes.content}>
+        <SwitchTransition mode='out-in'>
+          <CSSTransition classNames='fade' timeout={1000} key={page === 'search' ? "on" : "off"}>
+            {page === 'search' ? <Search /> : <Library />}
+          </CSSTransition>
+        </SwitchTransition>
+      </div>
     </div>
   );
 };
