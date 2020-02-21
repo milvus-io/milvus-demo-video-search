@@ -88,7 +88,7 @@ const RootContainer: React.FC = () => {
       </div>
       <div className={classes.content}>
         <SwitchTransition mode='out-in'>
-          <CSSTransition classNames='fade' timeout={1000} key={page === 'search' ? "on" : "off"}>
+          <CSSTransition classNames='fade' timeout={300} key={page === 'search' ? "on" : "off"} >
             {page === 'search' ? <Search /> : <Library />}
           </CSSTransition>
         </SwitchTransition>

@@ -8,20 +8,6 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import DeleteIcon from "@material-ui/icons/Delete"
 import './Setting.css'
 
-// const Images = [
-//   'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRGSpZe-XshtZ7V7d4XDaPX3tesALsvATRuANWm_u5SE_iU59C3',
-//   'https://img95.699pic.com/photo/50053/0716.jpg_wh300.jpg',
-//   'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTsQNVrDiy1hIUWpICIaziek6B8JlvXWLmWXdIPCIIu6UpZ0J3N',
-//   'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTwkc-7DUmV9xKxJ8K2w3MWZ96-vYfgrvf0-R6n3Kn2o5cNRpYS',
-//   'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQeYoj5jxWBFDJ5mmz6JgJt2XiVDgdJG5jGZISjmh7lKzMr23mc',
-//   'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcSAjGs5INITjQag0tZllABICCMuvfNT2xFEPXeAcb2CrNpLh-yq',
-//   'https://up.enterdesk.com/edpic_360_360/90/0b/79/900b79210005e9d0216f2cffc9a4017c.jpg',
-//   'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQhPDRWlDb8TkK8ebwCSmyxojTDlKSK9_kqsZV5H9d3dqiMS2zi',
-//   'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcSfVQQtRw0p7MqTtmh6ZozJK257gpsebIeC3VEf-UDz4eQ2DCMa',
-//   'https://img95.699pic.com/photo/50078/8989.jpg_wh300.jpg',
-//   'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQ8ZaqUxcBv22wpMn2b347FtrNT2MGWVAKvp20cafXVqvsRMsSi',
-// ]
-
 const Setting = (props: any) => {
   const isMobile = !useMediaQuery("(min-width:1000px)");
   const useStyles = makeStyles({
@@ -80,12 +66,13 @@ const Setting = (props: any) => {
     setPageStatus('search');
     search(imgSrc).then((res: any) => {
       // TODO: && res.data === ok
+      console.log(res);
       if (res && res.status === 200) {
         setPageStatus('show-search')
-        setResults([]);
-        setTimeout(()=>{
+        // setResults([]);
+        // setTimeout(()=>{
           setResults(res.data)
-        },200)
+        // },200)
       } else {
         setPageStatus('fail-search')
       }
@@ -103,10 +90,10 @@ const Setting = (props: any) => {
       reader.addEventListener("load", function () {
         const { history } = searchParams;
         history.splice(0, 0, reader.result)
-        setSearchParams({ history, curr: reader.result });
+        setSearchParams({ history, curr: file });
       }, false);
       if (file) {
-        reader.readAsDataURL(file);
+        reader.readAsArrayBuffer(file);
       }
     }
     const Uploader = uploader.current || document.createElement('div');

@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
+import FlipMove from 'react-flip-move';
 import { queryContext } from '../contexts/QueryContext'
 import { makeStyles } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import FileDrop from 'react-file-drop';
 import AddIcon from "@material-ui/icons/Add"
 import DeleteIcon from "@material-ui/icons/Delete"
+var shuffle = require('lodash.shuffle')
 var GifPlayer = require('react-gif-player')
 
 const _calPercent = ({ percent, stage }) => {
@@ -29,7 +31,7 @@ const Libarary = () => {
     },
     container: {
       width: '100%',
-      columnCount: 5,
+      columnCount: 6,
       columnGap: '3px',
       position: 'relative',
     },
@@ -37,7 +39,7 @@ const Libarary = () => {
       width: '100%',
       display: 'block',
       position: 'relative',
-      border: 'solid 1px transparent'
+      border: 'solid 1px transparent',
     },
     cover: {
       position: 'absolute',
@@ -79,11 +81,16 @@ const Libarary = () => {
     setResults(results.filter(result => result.id !== id))
     // TODO: delete query
   }
+
   useEffect(() => {
     const query = async () => {
       queryLibrary().then(res => {
         if (res.status === 200) {
-          setResults(res.data);
+          const newDatas = res.data;
+          setResults(newDatas)
+          setTimeout(() => {
+            setResults(shuffle(newDatas))
+          }, 1500)
         }
       })
     }
@@ -171,15 +178,18 @@ const Libarary = () => {
             </FileDrop>
           )
         }
-        {results.map((data) => {
-          const isSelected = data.id === selectedID;
-          return (
-            <div className={`${classes.imgWrapper} ${isSelected ? classes.selected : ""}`} key={data.id} onMouseOver={() => { onMouseOver(data.id); return true; }} onMouseLeave={() => { onMouseLeave(data.id); return true }}>
-              <GifPlayer gif={data.src} autoplay />
-              {isSelected && <div style={{ position: 'absolute', top: 0, right: 0 }}><DeleteIcon classes={{ root: classes.delete }} onClick={() => deleteGif(data.id)} /></div>}
-            </div>
-          )
-        })}
+        <FlipMove duration={500}>
+          {results.map((data) => {
+            const isSelected = data.id === selectedID;
+            return (
+              <div className={`${classes.imgWrapper} ${isSelected ? classes.selected : ""}`}
+                key={data.id} onMouseOver={() => { onMouseOver(data.id); return true; }} onMouseLeave={() => { onMouseLeave(data.id); return true }}>
+                <GifPlayer gif={data.src} autoplay />
+                {isSelected && <div style={{ position: 'absolute', top: 0, right: 0 }}><DeleteIcon classes={{ root: classes.delete }} onClick={() => deleteGif(data.id)} /></div>}
+              </div>
+            )
+          })}
+        </FlipMove>
       </div>
     </div>)
 };
