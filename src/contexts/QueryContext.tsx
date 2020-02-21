@@ -23,14 +23,17 @@ const useStyles = makeStyles({
 const QueryProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const classes = useStyles();
   // current page : search | library
-  const [page, setPage] = useState<string>('search');
+  // const [page, setPage] = useState<string>('search');
+  const [page, setPage] = useState<string>('library');
   // page status : upload-img | search | show-search | upload-library| show-library | fail-library
   const [pageStatus, setPageStatus] = useState<string>('show-search');
   // note status 
   const [noteStatus, setNoteStatus] = useState<any>({ show: false, content: '' })
   // searchParams
   const [searchParams, setSearchParams]: any = useState({
-    history: [],
+    history: [
+      'https://miro.medium.com/max/940/1*1VZUa3mn3569l3ePzq3piA.gif'
+    ],
     curr: ''
   })
   const showNote = (content: string) => {

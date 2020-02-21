@@ -1,14 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useContext } from "react";
+import { queryContext } from '../contexts/QueryContext'
 import FlipMove from 'react-flip-move';
 import clsx from 'clsx';
 import { makeStyles } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
-import { CSSTransition, TransitionGroup } from "react-transition-group"
 import './style.css'
 var GifPlayer = require('react-gif-player')
 var shuffle = require('lodash.shuffle')
 
 const Results = props => {
+  const { searchParams } = useContext(queryContext)
   const isMobile = !useMediaQuery("(min-width:1000px)");
   const useStyles = makeStyles({
     root: {
@@ -43,41 +44,40 @@ const Results = props => {
     }
   });
   const classes = useStyles({});
-  const { results } = props;
+  const { results, setResults } = props;
 
+  const isSearchChange = useRef(true);
   useEffect(() => {
-    // const interval = setInterval(() => {
-    //   if (results.length) {
-    //     const first = results[0];
-    //     const rest = shuffle(results.slice(1, results.length));
-    //     setResults([first, ...rest])
-    //   }
-    // }, 50000)
-    // return () => {
-    //   clearInterval(interval)
-    // }
+    let timeout;
+    if (isSearchChange.current) {
+      isSearchChange.current = false;
+      timeout = setTimeout(() => {
+        setResults(shuffle(results));
+      }, 1500)
+    }
+    return () => {
+      clearTimeout(timeout);
+    }
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [results]);
+
+  useEffect(() => {
+    isSearchChange.current = true;
+  }, [searchParams.curr])
   return (
     <div className={classes.root}>
       <div className={classes.container}>
-        <TransitionGroup>
+        <FlipMove duration={500}>
           {results.map((data, index) => (
-            <CSSTransition
-              key={data.id}
-              timeout={1000}
-              in={!!results.length}
-              classNames="transition-image">
-              <div className={clsx(classes.imgWrapper, index === 0 ? 'best' : '')}>
-                <GifPlayer gif={data.image} autoplay />
-                <div className={classes.info}>
-                  <h3>{data.key}</h3>
-                  <p>{data.distance}</p>
-                </div>
+            <div className={clsx(classes.imgWrapper, index === 0 ? 'best' : '')} key={data.id}>
+              <GifPlayer gif={data.image} autoplay />
+              <div className={classes.info}>
+                <h3>{data.key}</h3>
+                <p>{data.distance}</p>
               </div>
-            </CSSTransition>
+            </div>
           ))}
-        </TransitionGroup>
+        </FlipMove>
       </div>
     </div>
   );
