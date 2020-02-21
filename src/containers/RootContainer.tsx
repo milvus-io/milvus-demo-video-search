@@ -1,4 +1,6 @@
 import React, { useContext } from "react";
+// import Slide from '@material-ui/core/Slide';
+import Fade from '@material-ui/core/Fade';
 import { makeStyles } from "@material-ui/core/styles";
 import { queryContext } from "../contexts/QueryContext";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
@@ -7,13 +9,35 @@ import SearchIcon from "@material-ui/icons/Search"
 import SettingsIcon from "@material-ui/icons/Settings"
 import Library from "../components/Library"
 import Search from '../components/Search'
+import { CSSTransition, SwitchTransition } from "react-transition-group"
+
+const getTitle = (pageStatus: string) => {
+  switch (pageStatus) {
+    case 'upload-img':
+      return 'UPLOADING...'
+    case 'upload-img':
+      return 'UPLOADING...'
+    case 'search':
+      return 'SEARCHING...'
+    case 'show-search':
+      return 'VIDEO SEARCH'
+    case 'fail-search':
+      return 'SEARCH FAIL'
+    case 'upload-library':
+      return 'UPLOADING...'
+    case 'show-library':
+      return '10000 VIDEOS IN LIBRARY'
+    default:
+      return 'VIDEO SEARCH'
+  }
+}
 const RootContainer: React.FC = () => {
   const { page, pageStatus, setPage, setPageStatus } = useContext(queryContext)
   const isMobile = !useMediaQuery("(min-width:1000px)");
   const useStyles = makeStyles({
     root: {
       flexGrow: 1,
-      backgroundColor: "#1F2023",
+      // backgroundColor: "#1F2023",
       height: '100vh',
       overflow: 'hidden',
       position: 'relative'
@@ -22,7 +46,8 @@ const RootContainer: React.FC = () => {
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      color: '#fff'
+      color: '#fff',
+      backgroundColor: "#1F2023",
     },
     logo: {
       paddingLeft: '30px',
@@ -54,26 +79,24 @@ const RootContainer: React.FC = () => {
     }
   });
   const classes = useStyles({});
-
   return (
     <div className={classes.root}>
       <div className={classes.nav}>
         <img className={classes.logo} src={Logo} width="150px" alt="logo" />
-        {pageStatus === 'upload-img' && <h3>UPLOADING...</h3>}
-        {pageStatus === 'search' && <h3>SEARCHING...</h3>}
-        {pageStatus === 'show-search' && <h3>VIDEO SEARCH</h3>}
-        {pageStatus === 'fail-search' && <h3>SEARCH FAIL</h3>}
-        {pageStatus === 'upload-library' && <h3>UPLOADING...</h3>}
-        {pageStatus === 'show-library' && <h3>10000 VIDEOS IN LIBRARY</h3>}
+        <h3>{getTitle(pageStatus)}</h3>
         <div className={classes.pageSwitcher} onClick={() => { setPage(page === 'search' ? 'library' : 'search'); setPageStatus(page === 'search' ? 'show-library' : 'show-search'); }}>
           <div className={page === 'search' ? classes.selectedWrapper : classes.noneSelectedWrapper}><SearchIcon /></div>
           <div className={page === 'library' ? classes.selectedWrapper : classes.noneSelectedWrapper}><SettingsIcon /></div>
         </div>
       </div>
-      <div className={classes.content}>
-        {page === 'search' && <Search />}
-        {page === 'library' && <Library />}
-      </div>
+      {/* <div className={classes.content}> */}
+        <Fade in={page==='search'} >
+          <Search />
+        </Fade>
+        {/* <Slide in={page !== 'search'} direction="right" mountOnEnter unmountOnExit>
+          <Library />
+        </Slide> */}
+      {/* </div> */}
     </div>
   );
 };
