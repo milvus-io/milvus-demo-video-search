@@ -56,18 +56,17 @@ const Setting = (props: any) => {
   const classes = useStyles({});
   const [deleteID, setDeleteID] = useState('');
   const uploader = useRef(null);
-  const fileContainer = useRef("");
   const changeImg = (curr: any) => {
-    setSearchParams({ ...searchParams, curr })
+    setSearchParams((searchParams: any) => ({ ...searchParams, curr }))
   }
-  const setDeleteingGif = (src: string) => {
-    setSearchParams({ ...searchParams, history: searchParams.history.filter((t: any) => t.data !== src) })
+  const delHistory = (src: string) => {
+    const arr = searchParams.history.filter((t: any) => t.data !== src)
+    setSearchParams((searchParams: any) => ({ ...searchParams, history: arr }))
   }
   const _search = async (imgSrc: string) => {
     setPageStatus('search');
     search(imgSrc).then((res: any) => {
       if (res && res.status === 200) {
-        console.log(res.data.Total)
         setPageStatus('show-search')
         setResults(res.data.Data)
       } else {
@@ -77,8 +76,8 @@ const Setting = (props: any) => {
   }
 
   useEffect(() => {
-    if (searchParams.curr) {
-      _search(fileContainer.current);
+    if (searchParams.curr.file) {
+      _search(searchParams.curr.file);
     }
     const _addSearchImg = (e: any) => {
       setPageStatus('upload-img')
@@ -86,9 +85,9 @@ const Setting = (props: any) => {
       const reader = new FileReader();
       reader.addEventListener("load", function () {
         const { history } = searchParams;
-        history.splice(0, 0, reader.result)
-        fileContainer.current = file;
-        setSearchParams({ history, curr: { file, data: reader.result } });
+        const newOne = { file, data: reader.result }
+        history.splice(0, 0, newOne);
+        setSearchParams({ history, curr: newOne });
       }, false);
       if (file) {
         reader.readAsDataURL(file);
@@ -120,7 +119,7 @@ const Setting = (props: any) => {
         return (
           <div key={index} className={clsx(classes.imageWrapper, isSelected ? classes.selectedImage : "")} onClick={() => changeImg(item)} onMouseEnter={() => setDeleteID(item.data)} onMouseLeave={() => { item.data === deleteID && setDeleteID("") }}>
             <img style={{ width: '100%' }} src={item.data} alt="" />
-            {isDelete && <div style={{ position: 'absolute', top: 0, right: 0 }}><DeleteIcon classes={{ root: classes.delete }} onClick={() => setDeleteingGif(item.data)} /></div>}
+            {isDelete && <div style={{ position: 'absolute', top: 0, right: 0 }}><DeleteIcon classes={{ root: classes.delete }} onClick={() => { delHistory(item.data); return false; }} /></div>}
           </div>
         )
       })}

@@ -11,3 +11,7 @@ export const delayRunFunc = (params: any, func: Function, time: number) => {
   };
   return r;
 };
+
+export const cloneObj = (obj: any) => {
+  return JSON.parse(JSON.stringify(obj))
+}

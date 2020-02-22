@@ -69,13 +69,11 @@ const Results = props => {
       <div className={classes.container}>
         <FlipMove duration={500}>
           {results.map((data, index) => {
-            console.log(data.name)
             return (
               <div className={clsx(classes.imgWrapper, index === 0 ? 'best' : '')} key={data.name}>
                 <GifPlayer gif={data.data} autoplay />
                 <div className={classes.info}>
-                  <h3>{data.key}</h3>
-                  <p>{data.distance}</p>
+                  <p>{data.distance.toFixed(5)}</p>
                 </div>
               </div>
             )
