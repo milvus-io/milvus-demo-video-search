@@ -66,11 +66,10 @@ const Setting = (props: any) => {
   const _search = async (imgSrc: string) => {
     setPageStatus('search');
     search(imgSrc).then((res: any) => {
-      // TODO: && res.data === ok
-      // console.log(res);
       if (res && res.status === 200) {
+        console.log(res.data.Total)
         setPageStatus('show-search')
-        setResults(res.data)
+        setResults(res.data.Data)
       } else {
         setPageStatus('fail-search')
       }

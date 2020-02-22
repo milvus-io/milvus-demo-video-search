@@ -9,7 +9,7 @@ if (window._env_ && window._env_.API_URL) {
   endpoint = window._env_.API_URL;
 }
 
-export const UPLOAD = `${endpoint}/v1/insert`;
+export const UPLOAD = `${endpoint}/v1/video`;
 export const SEARCH = `${endpoint}/v1/search`
 export const QUERY_STATUS = `${endpoint}/v1/status`
-export const QUERY_LIBRARY = `${endpoint}/v1/library`
+export const QUERY_LIBRARY = `${endpoint}/v1/video`

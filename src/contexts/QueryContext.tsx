@@ -49,27 +49,29 @@ const QueryProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const url = URL.SEARCH;
     const bodyFormData = new FormData()
     bodyFormData.set('file', params);
-    bodyFormData.set('Num', '30');
+    bodyFormData.set('Num', '100');
     return await axiosInstance.post(url, bodyFormData).catch(errorParser);
   };
   const upload = async (params: any) => {
     const url = URL.UPLOAD;
-    return await axiosInstance.post(url, params).catch(errorParser);
+    var formData = new FormData();
+    formData.set('file', params);
+    return await axiosInstance.post(url, formData).catch(errorParser);
   }
   const queryStatus = async (params: any) => {
     const url = URL.QUERY_STATUS;
     var bodyFormData = new FormData()
-    bodyFormData.set('id', params.id);
+    bodyFormData.set('ID', params.id);
     return await axiosInstance.post(url, bodyFormData).catch(errorParser);
   }
   const queryLibrary = async (params: any) => {
     const url = URL.QUERY_LIBRARY;
     params = {
       "Reverse": true,
-      "PageNum": 3,
-      "PerPageCount": 2
+      "PageNum": 1,
+      "PerPageCount": 100
     }
-    return await axiosInstance.get(url, params).catch(errorParser);
+    return await axiosInstance.get(url, { params }).catch(errorParser);
   }
 
   return (

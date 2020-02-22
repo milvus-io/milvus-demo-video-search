@@ -73,6 +73,7 @@ const RootContainer: React.FC = () => {
       flexGrow: 1,
       backgroundColor: "#1F2023",
       height: 'calc(100% - 50px)',
+      overflowY:'auto'
     }
   });
   const classes = useStyles({});

@@ -68,15 +68,18 @@ const Results = props => {
     <div className={classes.root}>
       <div className={classes.container}>
         <FlipMove duration={500}>
-          {results.map((data, index) => (
-            <div className={clsx(classes.imgWrapper, index === 0 ? 'best' : '')} key={data.id}>
-              <GifPlayer gif={data.image} autoplay />
-              <div className={classes.info}>
-                <h3>{data.key}</h3>
-                <p>{data.distance}</p>
+          {results.map((data, index) => {
+            console.log(data.name)
+            return (
+              <div className={clsx(classes.imgWrapper, index === 0 ? 'best' : '')} key={data.name}>
+                <GifPlayer gif={data.data} autoplay />
+                <div className={classes.info}>
+                  <h3>{data.key}</h3>
+                  <p>{data.distance}</p>
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </FlipMove>
       </div>
     </div>

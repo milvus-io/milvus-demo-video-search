@@ -9,7 +9,7 @@ import DeleteIcon from "@material-ui/icons/Delete"
 var GifPlayer = require('react-gif-player')
 
 const _calPercent = ({ percent, stage }) => {
-  return stage === 'predict' ? percent / 2 : 50 + percent / 2
+  return stage !== 'predict' ? percent * 10000 / 2 : 50 + percent * 10000 / 2
 }
 // TODO: upload not work when upload once
 const Libarary = () => {
@@ -84,9 +84,9 @@ const Libarary = () => {
   useEffect(() => {
     const query = async () => {
       queryLibrary().then(res => {
-        if (res.status === 200) {
-          const newDatas = res.data;
-          setResults(newDatas)
+        if (res && res.status === 200) {
+          const { Data, Total } = res.data;
+          setResults([])
         }
       })
     }
@@ -104,7 +104,9 @@ const Libarary = () => {
     const _keepProcess = async id => {
       queryStatus(id).then(res => {
         if (res && res.status === 200) {
+          console.log(res.data)
           const percent = _calPercent(res.data);
+          console.log(percent)
           setLoadingPercent(percent);
           percent === 100
             ? _finishUpload()
@@ -122,7 +124,7 @@ const Libarary = () => {
         setPageStatus('upload-library');
         upload(file).then(res => {
           if (res && res.status === 200) {
-            const id = res.data + Math.random().toString();
+            const id = res.data;
             uploaderID.current = id;
             _keepProcess(id);
           } else {
@@ -174,6 +176,13 @@ const Libarary = () => {
               </FileDrop>
             )
         }
+        {results.length === 0 && (
+          <>
+            {[1, 2, 3, 4, 5].map((i, index) => {
+              return <div key={index} className={classes.imgWrapper} style={{ visibility: 'hidden', height: '300px' }}></div>
+            })}
+          </>
+        )}
         <FlipMove duration={500}>
           {results.map((data) => {
             const isSelected = data.id === selectedID;
