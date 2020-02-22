@@ -24,7 +24,7 @@ const QueryProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const classes = useStyles();
   // current page : search | library
   const [page, setPage] = useState<string>('search');
-  // const [page, setPage] = useState<string>('library');
+  const [navTitle, setNavTitle]: any = useState('VIDEO SEARCH')
   // page status : upload-img | search | show-search | upload-library| show-library | fail-library
   const [pageStatus, setPageStatus] = useState<string>('show-search');
   // note status 
@@ -75,15 +75,22 @@ const QueryProvider: FC<{ children: ReactNode }> = ({ children }) => {
     }
     return await axiosInstance.get(url, { params }).catch(errorParser);
   }
-
+  const delVideo = async (_params: any) => {
+    const url = URL.VIDEO;
+    const params = { ID: _params }
+    return await axiosInstance.delete(url, { params }).catch(errorParser);
+  }
   return (
     <Provider
       value={{
+        navTitle,
+        setNavTitle,
         // querys
         search,
         upload,
         queryStatus,
         queryLibrary,
+        delVideo,
         // notes
         showNote,
         hideNote,

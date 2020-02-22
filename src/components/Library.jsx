@@ -13,7 +13,7 @@ const _calPercent = ({ percent, state }) => {
 }
 // TODO: upload not work when upload once
 const Libarary = () => {
-  const { queryLibrary, pageStatus, setPageStatus, upload, queryStatus } = useContext(queryContext);
+  const { queryLibrary, navTitle, setNavTitle, upload, queryStatus, delVideo } = useContext(queryContext);
   const isMobile = !useMediaQuery("(min-width:1000px)");
   const [results, setResults] = useState([]);
   const [selectedID, setSelectedID] = useState('');
@@ -72,22 +72,29 @@ const Libarary = () => {
   const classes = useStyles({});
   const uploader = useRef(null);
   const uploaderID = useRef(null);
-  const ImgUploading = useRef("")
+  const ImgUploading = useRef("");
+  const TotalContainer = useRef(0);
 
   const onMouseOver = (id) => setSelectedID(id)
   const onMouseLeave = (id) => selectedID === id && setSelectedID("")
-  const deleteGif = (id) => {
-    setResults(results.filter(result => result.id !== id))
-    // TODO: delete query
+  const deleteGif = (name) => {
+    setResults(results.filter(result => result.name !== name))
+    delVideo(name).then(res => {
+      if (res && res.status === 200) {
+        TotalContainer.current = TotalContainer.current - 1;
+        setNavTitle(`${TotalContainer.current} VIDEOS IN LIBRARY`)
+      }
+    })
   }
 
   useEffect(() => {
     const query = async () => {
       queryLibrary().then(res => {
         if (res && res.status === 200) {
-          console.log(res)
           const { Data, Total } = res.data;
           setResults(Data)
+          TotalContainer.current = Total;
+          setNavTitle(`${Total} VIDEOS IN LIBRARY`)
         }
       })
     }
@@ -97,9 +104,10 @@ const Libarary = () => {
 
   useEffect(() => {
     const _finishUpload = () => {
-      setPageStatus('show-library');
+      TotalContainer.current = TotalContainer.current + 1;
+      setNavTitle(`${TotalContainer.current} VIDEOS IN LIBRARY`)
       setLoadingPercent(0)
-      setResults([{ id: uploaderID.current, src: ImgUploading.current }, ...results])
+      setResults(results => [{ name: uploaderID.current, data: ImgUploading.current }, ...results])
       ImgUploading.current = '';
     }
     const _keepProcess = async id => {
@@ -111,7 +119,7 @@ const Libarary = () => {
             ? _finishUpload()
             : (function () { setLoadingPercent(percent); _keepProcess(id) }())
         } else {
-          setPageStatus('fail-library')
+          setNavTitle('SEARCH FAIL')
         }
       })
     }
@@ -120,15 +128,14 @@ const Libarary = () => {
       const reader = new FileReader();
       reader.addEventListener("load", function () {
         ImgUploading.current = reader.result;
-        setPageStatus('upload-library');
+        setNavTitle('UPLOADING...');
         upload(file).then(res => {
           if (res && res.status === 200) {
             const id = res.data.id;
-            console.log(id)
             uploaderID.current = id;
             _keepProcess(id);
           } else {
-            setPageStatus('fail-library')
+            setNavTitle('SEARCH FAIL')
           }
         })
       }, false);
@@ -157,7 +164,7 @@ const Libarary = () => {
     <div className={classes.root}>
       <div className={classes.container}>
         {
-          pageStatus === 'upload-library'
+          navTitle === 'UPLOADING'
             ? (
               <div className={classes.imgWrapper} >
                 <GifPlayer gif={ImgUploading.current} autoplay />
@@ -185,7 +192,7 @@ const Libarary = () => {
         )}
         <FlipMove duration={500}>
           {results.map((data) => {
-            const isSelected = data.id === selectedID;
+            const isSelected = data.name === selectedID;
             return (
               <div className={`${classes.imgWrapper} ${isSelected ? classes.selected : ""}`}
                 key={data.name}

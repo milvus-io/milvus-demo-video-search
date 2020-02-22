@@ -52,7 +52,7 @@ const Setting = (props: any) => {
     }
   });
   const { setResults } = props;
-  const { search, setPageStatus, searchParams, setSearchParams } = useContext(queryContext)
+  const { search, setNavTitle, searchParams, setSearchParams } = useContext(queryContext)
   const classes = useStyles({});
   const [deleteID, setDeleteID] = useState('');
   const uploader = useRef(null);
@@ -64,13 +64,13 @@ const Setting = (props: any) => {
     setSearchParams((searchParams: any) => ({ ...searchParams, history: arr }))
   }
   const _search = async (imgSrc: string) => {
-    setPageStatus('search');
+    setNavTitle('SEARCHING...');
     search(imgSrc).then((res: any) => {
       if (res && res.status === 200) {
-        setPageStatus('show-search')
+        setNavTitle(`${res.data.Total} RESULTS`)
         setResults(res.data.Data)
       } else {
-        setPageStatus('fail-search')
+        setNavTitle('SEARCH FAIL')
       }
     })
   }
@@ -80,7 +80,7 @@ const Setting = (props: any) => {
       _search(searchParams.curr.file);
     }
     const _addSearchImg = (e: any) => {
-      setPageStatus('upload-img')
+      setNavTitle('UPLOADING...')
       const file = e.dataTransfer.files[0];
       const reader = new FileReader();
       reader.addEventListener("load", function () {

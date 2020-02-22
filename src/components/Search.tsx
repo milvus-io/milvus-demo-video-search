@@ -5,7 +5,6 @@ import Setting from "../containers/Setting";
 import Results from "./Results";
 const SearchPage: React.FC = () => {
   const isMobile = !useMediaQuery("(min-width:1000px)");
-
   const classes = makeStyles({
     root: {
       flexGrow: 1,

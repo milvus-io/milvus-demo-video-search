@@ -9,26 +9,8 @@ import Library from "../components/Library"
 import Search from '../components/Search'
 import { CSSTransition, SwitchTransition } from "react-transition-group"
 
-const getTitle = (pageStatus: string) => {
-  switch (pageStatus) {
-    case 'upload-img':
-      return 'UPLOADING...'
-    case 'search':
-      return 'SEARCHING...'
-    case 'show-search':
-      return 'VIDEO SEARCH'
-    case 'fail-search':
-      return 'SEARCH FAIL'
-    case 'upload-library':
-      return 'UPLOADING...'
-    case 'show-library':
-      return '10000 VIDEOS IN LIBRARY'
-    default:
-      return 'VIDEO SEARCH'
-  }
-}
 const RootContainer: React.FC = () => {
-  const { page, pageStatus, setPage, setPageStatus } = useContext(queryContext)
+  const { page, setPage, navTitle, setNavTitle } = useContext(queryContext)
   const isMobile = !useMediaQuery("(min-width:1000px)");
   const useStyles = makeStyles({
     root: {
@@ -73,7 +55,7 @@ const RootContainer: React.FC = () => {
       flexGrow: 1,
       backgroundColor: "#1F2023",
       height: 'calc(100% - 50px)',
-      overflowY:'auto'
+      overflowY: 'auto'
     }
   });
   const classes = useStyles({});
@@ -81,8 +63,8 @@ const RootContainer: React.FC = () => {
     <div className={classes.root}>
       <div className={classes.nav}>
         <img className={classes.logo} src={Logo} width="150px" alt="logo" />
-        <h3>{getTitle(pageStatus)}</h3>
-        <div className={classes.pageSwitcher} onClick={() => { setPage(page === 'search' ? 'library' : 'search'); setPageStatus(page === 'search' ? 'show-library' : 'show-search'); }}>
+        <h3>{navTitle}</h3>
+        <div className={classes.pageSwitcher} onClick={() => { setPage(page === 'search' ? 'library' : 'search'); page === 'search' && setNavTitle('VIDEO SEARCH'); }}>
           <div className={page === 'search' ? classes.selectedWrapper : classes.noneSelectedWrapper}><SearchIcon /></div>
           <div className={page === 'library' ? classes.selectedWrapper : classes.noneSelectedWrapper}><SettingsIcon /></div>
         </div>
@@ -93,7 +75,6 @@ const RootContainer: React.FC = () => {
             {page === 'search' ? <Search /> : <Library />}
           </CSSTransition>
         </SwitchTransition>
-        {/* {page === 'search' ? <Search /> : <Library />} */}
       </div>
     </div>
   );
