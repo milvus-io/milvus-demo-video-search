@@ -6,7 +6,6 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import FileDrop from 'react-file-drop';
 import AddIcon from "@material-ui/icons/Add"
 import DeleteIcon from "@material-ui/icons/Delete"
-var shuffle = require('lodash.shuffle')
 var GifPlayer = require('react-gif-player')
 
 const _calPercent = ({ percent, stage }) => {
@@ -88,9 +87,6 @@ const Libarary = () => {
         if (res.status === 200) {
           const newDatas = res.data;
           setResults(newDatas)
-          setTimeout(() => {
-            setResults(shuffle(newDatas))
-          }, 1500)
         }
       })
     }
