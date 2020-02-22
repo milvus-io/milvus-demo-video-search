@@ -32,9 +32,11 @@ const QueryProvider: FC<{ children: ReactNode }> = ({ children }) => {
   // searchParams
   const [searchParams, setSearchParams]: any = useState({
     history: [
-      'https://miro.medium.com/max/940/1*1VZUa3mn3569l3ePzq3piA.gif'
     ],
-    curr: ''
+    curr: {
+      file: "",
+      data: ""
+    }
   })
   const showNote = (content: string) => {
     setNoteStatus({ show: true, content });
@@ -49,11 +51,11 @@ const QueryProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const url = URL.SEARCH;
     const bodyFormData = new FormData()
     bodyFormData.set('file', params);
-    bodyFormData.set('Num', '100');
+    bodyFormData.set('Num', '5');
     return await axiosInstance.post(url, bodyFormData).catch(errorParser);
   };
   const upload = async (params: any) => {
-    const url = URL.UPLOAD;
+    const url = URL.VIDEO;
     var formData = new FormData();
     formData.set('file', params);
     return await axiosInstance.post(url, formData).catch(errorParser);
@@ -61,14 +63,14 @@ const QueryProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const queryStatus = async (params: any) => {
     const url = URL.QUERY_STATUS;
     var bodyFormData = new FormData()
-    bodyFormData.set('ID', params.id);
+    bodyFormData.set('ID', params);
     return await axiosInstance.post(url, bodyFormData).catch(errorParser);
   }
   const queryLibrary = async (params: any) => {
-    const url = URL.QUERY_LIBRARY;
+    const url = URL.VIDEO;
     params = {
       "Reverse": true,
-      "PageNum": 1,
+      "PageNum": 0,
       "PerPageCount": 100
     }
     return await axiosInstance.get(url, { params }).catch(errorParser);

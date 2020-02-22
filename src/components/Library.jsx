@@ -8,8 +8,8 @@ import AddIcon from "@material-ui/icons/Add"
 import DeleteIcon from "@material-ui/icons/Delete"
 var GifPlayer = require('react-gif-player')
 
-const _calPercent = ({ percent, stage }) => {
-  return stage !== 'predict' ? percent * 10000 / 2 : 50 + percent * 10000 / 2
+const _calPercent = ({ percent, state }) => {
+  return (state !== 'predict' ? percent * 100 / 2 : 50 + percent * 100 / 2).toFixed(2)
 }
 // TODO: upload not work when upload once
 const Libarary = () => {
@@ -85,8 +85,9 @@ const Libarary = () => {
     const query = async () => {
       queryLibrary().then(res => {
         if (res && res.status === 200) {
+          console.log(res)
           const { Data, Total } = res.data;
-          setResults([])
+          setResults(Data)
         }
       })
     }
@@ -97,18 +98,16 @@ const Libarary = () => {
   useEffect(() => {
     const _finishUpload = () => {
       setPageStatus('show-library');
-      ImgUploading.current = '';
       setLoadingPercent(0)
       setResults([{ id: uploaderID.current, src: ImgUploading.current }, ...results])
+      ImgUploading.current = '';
     }
     const _keepProcess = async id => {
       queryStatus(id).then(res => {
         if (res && res.status === 200) {
-          console.log(res.data)
           const percent = _calPercent(res.data);
-          console.log(percent)
-          setLoadingPercent(percent);
-          percent === 100
+          setLoadingPercent(Math.floor(percent * 100) / 100);
+          percent >= 100
             ? _finishUpload()
             : (function () { setLoadingPercent(percent); _keepProcess(id) }())
         } else {
@@ -124,7 +123,8 @@ const Libarary = () => {
         setPageStatus('upload-library');
         upload(file).then(res => {
           if (res && res.status === 200) {
-            const id = res.data;
+            const id = res.data.id;
+            console.log(id)
             uploaderID.current = id;
             _keepProcess(id);
           } else {
@@ -188,13 +188,23 @@ const Libarary = () => {
             const isSelected = data.id === selectedID;
             return (
               <div className={`${classes.imgWrapper} ${isSelected ? classes.selected : ""}`}
-                key={data.id} onMouseOver={() => { onMouseOver(data.id); return true; }} onMouseLeave={() => { onMouseLeave(data.id); return true }}>
-                <GifPlayer gif={data.src} autoplay />
-                {isSelected && <div style={{ position: 'absolute', top: 0, right: 0 }}><DeleteIcon classes={{ root: classes.delete }} onClick={() => deleteGif(data.id)} /></div>}
+                key={data.name}
+                onMouseOver={() => { onMouseOver(data.name); }}
+                onMouseLeave={() => { onMouseLeave(data.name); }}
+              >
+                <GifPlayer gif={data.data} autoplay />
+                {isSelected && <div style={{ position: 'absolute', top: 0, right: 0 }}><DeleteIcon classes={{ root: classes.delete }} onClick={() => deleteGif(data.name)} /></div>}
               </div>
             )
           })}
         </FlipMove>
+        {results.length < 6 && (
+          <>
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i, index) => {
+              return <div key={`key${index}`} className={classes.imgWrapper} style={{ visibility: 'hidden', height: '300px' }}></div>
+            })}
+          </>
+        )}
       </div>
     </div>)
 };

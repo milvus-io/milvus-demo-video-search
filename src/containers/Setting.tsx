@@ -57,11 +57,11 @@ const Setting = (props: any) => {
   const [deleteID, setDeleteID] = useState('');
   const uploader = useRef(null);
   const fileContainer = useRef("");
-  const changeImg = (curr: string) => {
+  const changeImg = (curr: any) => {
     setSearchParams({ ...searchParams, curr })
   }
   const setDeleteingGif = (src: string) => {
-    setSearchParams({ ...searchParams, history: searchParams.history.filter((t: string) => t !== src) })
+    setSearchParams({ ...searchParams, history: searchParams.history.filter((t: any) => t.data !== src) })
   }
   const _search = async (imgSrc: string) => {
     setPageStatus('search');
@@ -88,7 +88,7 @@ const Setting = (props: any) => {
         const { history } = searchParams;
         history.splice(0, 0, reader.result)
         fileContainer.current = file;
-        setSearchParams({ history, curr: reader.result });
+        setSearchParams({ history, curr: { file, data: reader.result } });
       }, false);
       if (file) {
         reader.readAsDataURL(file);
@@ -114,13 +114,13 @@ const Setting = (props: any) => {
           <AddIcon />
         </div>
       </FileDrop>
-      {searchParams.history.map((image: any, index: number) => {
-        const isSelected = image === searchParams.curr;
-        const isDelete = image === deleteID
+      {searchParams.history.map((item: any, index: number) => {
+        const isSelected = item.data === searchParams.curr.data;
+        const isDelete = item.data === deleteID
         return (
-          <div key={index} className={clsx(classes.imageWrapper, isSelected ? classes.selectedImage : "")} onClick={() => changeImg(image)} onMouseEnter={() => setDeleteID(image)} onMouseLeave={() => { image === deleteID && setDeleteID("") }}>
-            <img style={{ width: '100%' }} src={image} alt="" />
-            {isDelete && <div style={{ position: 'absolute', top: 0, right: 0 }}><DeleteIcon classes={{ root: classes.delete }} onClick={() => setDeleteingGif(image)} /></div>}
+          <div key={index} className={clsx(classes.imageWrapper, isSelected ? classes.selectedImage : "")} onClick={() => changeImg(item)} onMouseEnter={() => setDeleteID(item.data)} onMouseLeave={() => { item.data === deleteID && setDeleteID("") }}>
+            <img style={{ width: '100%' }} src={item.data} alt="" />
+            {isDelete && <div style={{ position: 'absolute', top: 0, right: 0 }}><DeleteIcon classes={{ root: classes.delete }} onClick={() => setDeleteingGif(item.data)} /></div>}
           </div>
         )
       })}
