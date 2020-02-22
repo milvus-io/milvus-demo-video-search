@@ -120,8 +120,7 @@ const Libarary = () => {
       reader.addEventListener("load", function () {
         ImgUploading.current = reader.result;
         setPageStatus('upload-library');
-        upload(reader.result).then(res => {
-          // TODO: && res.data === ok
+        upload(file).then(res => {
           if (res && res.status === 200) {
             const id = res.data + Math.random().toString();
             uploaderID.current = id;

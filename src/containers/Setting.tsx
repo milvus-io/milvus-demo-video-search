@@ -56,6 +56,7 @@ const Setting = (props: any) => {
   const classes = useStyles({});
   const [deleteID, setDeleteID] = useState('');
   const uploader = useRef(null);
+  const fileContainer = useRef("");
   const changeImg = (curr: string) => {
     setSearchParams({ ...searchParams, curr })
   }
@@ -69,10 +70,7 @@ const Setting = (props: any) => {
       // console.log(res);
       if (res && res.status === 200) {
         setPageStatus('show-search')
-        // setResults([]);
-        // setTimeout(()=>{
-          setResults(res.data)
-        // },200)
+        setResults(res.data)
       } else {
         setPageStatus('fail-search')
       }
@@ -81,7 +79,7 @@ const Setting = (props: any) => {
 
   useEffect(() => {
     if (searchParams.curr) {
-      _search(searchParams.curr);
+      _search(fileContainer.current);
     }
     const _addSearchImg = (e: any) => {
       setPageStatus('upload-img')
@@ -90,10 +88,11 @@ const Setting = (props: any) => {
       reader.addEventListener("load", function () {
         const { history } = searchParams;
         history.splice(0, 0, reader.result)
-        setSearchParams({ history, curr: file });
+        fileContainer.current = file;
+        setSearchParams({ history, curr: reader.result });
       }, false);
       if (file) {
-        reader.readAsArrayBuffer(file);
+        reader.readAsDataURL(file);
       }
     }
     const Uploader = uploader.current || document.createElement('div');
