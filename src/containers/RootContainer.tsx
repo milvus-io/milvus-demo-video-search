@@ -7,7 +7,7 @@ import SearchIcon from "@material-ui/icons/Search"
 import SettingsIcon from "@material-ui/icons/Settings"
 import Library from "../components/Library"
 import Search from '../components/Search'
-// import { CSSTransition, SwitchTransition } from "react-transition-group"
+import { CSSTransition, SwitchTransition } from "react-transition-group"
 
 const getTitle = (pageStatus: string) => {
   switch (pageStatus) {
@@ -87,12 +87,12 @@ const RootContainer: React.FC = () => {
         </div>
       </div>
       <div className={classes.content}>
-        {/* <SwitchTransition mode='out-in'>
-          <CSSTransition classNames='fade' timeout={300} key={page === 'search' ? "on" : "off"} >
+        <SwitchTransition mode='out-in'>
+          <CSSTransition classNames='fade' timeout={500} key={page === 'search' ? "on" : "off"} >
             {page === 'search' ? <Search /> : <Library />}
           </CSSTransition>
-        </SwitchTransition> */}
-        {page === 'search' ? <Search /> : <Library />}
+        </SwitchTransition>
+        {/* {page === 'search' ? <Search /> : <Library />} */}
       </div>
     </div>
   );
