@@ -164,7 +164,7 @@ const Libarary = () => {
     <div className={classes.root}>
       <div className={classes.container}>
         {
-          navTitle === 'UPLOADING'
+          navTitle === 'UPLOADING...'
             ? (
               <div className={classes.imgWrapper} >
                 <GifPlayer gif={ImgUploading.current} autoplay />
