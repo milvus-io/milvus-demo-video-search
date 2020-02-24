@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
+import WarnningIcon from '@material-ui/icons/Warning'
 import FlipMove from 'react-flip-move';
 import { queryContext } from '../contexts/QueryContext'
 import { makeStyles } from "@material-ui/core/styles";
@@ -45,6 +46,7 @@ const Libarary = () => {
       top: 0, right: 0, width: `${100 - loadingPercent}%`, height: '100%',
       backgroundColor: 'rgba(16, 16, 16, 0.5)',
     },
+
     percent: {
       position: 'absolute',
       bottom: '5px', right: '5px',
@@ -119,7 +121,7 @@ const Libarary = () => {
             ? _finishUpload()
             : (function () { setLoadingPercent(percent); _keepProcess(id) }())
         } else {
-          setNavTitle('SEARCH FAIL')
+          setNavTitle(<div style={{ alignItems: 'center', display: 'flex', }}><WarnningIcon style={{ color: 'yellow', marginRight: '50px' }} /><span>SEARCH FAIL</span></div>)
         }
       })
     }
@@ -135,7 +137,7 @@ const Libarary = () => {
             uploaderID.current = id;
             _keepProcess(id);
           } else {
-            setNavTitle('SEARCH FAIL')
+            setNavTitle(<div style={{ alignItems: 'center', display: 'flex', }}><WarnningIcon style={{ color: 'yellow', marginRight: '50px' }} /><span>SEARCH FAIL</span></div>)
           }
         })
       }, false);

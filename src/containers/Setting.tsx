@@ -5,6 +5,7 @@ import FileDrop from 'react-file-drop';
 import clsx from "clsx"
 import { makeStyles } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+import WarnningIcon from '@material-ui/icons/Warning'
 import DeleteIcon from "@material-ui/icons/Delete"
 import './Setting.css'
 
@@ -49,7 +50,7 @@ const Setting = (props: any) => {
     dragEnter: {
       border: '2px solid rgba(63, 156, 209, 1) !important',
       color: 'rgba(63, 156, 209, 1) !important',
-    }
+    },
   });
   const { setResults } = props;
   const { search, setNavTitle, searchParams, setSearchParams } = useContext(queryContext)
@@ -70,7 +71,7 @@ const Setting = (props: any) => {
         setNavTitle(`${res.data.Total} RESULTS`)
         setResults(res.data.Data)
       } else {
-        setNavTitle('SEARCH FAIL')
+        setNavTitle(<div style={{ alignItems: 'center', display: 'flex', }}><WarnningIcon style={{color:'yellow', marginRight:'50px'}} /><span>SEARCH FAIL</span></div>)
       }
     })
   }

@@ -15,7 +15,6 @@ const RootContainer: React.FC = () => {
   const useStyles = makeStyles({
     root: {
       flexGrow: 1,
-      // backgroundColor: "#1F2023",
       height: '100vh',
       overflow: 'hidden',
       position: 'relative'
