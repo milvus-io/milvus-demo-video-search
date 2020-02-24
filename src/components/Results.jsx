@@ -41,6 +41,7 @@ const Results = props => {
       zIndex: 10,
       padding: '10px',
       color: '#fff',
+      textShadow: `black 0.1em 0.1em 0.2em`
     }
   });
   const classes = useStyles({});
