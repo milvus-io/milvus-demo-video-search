@@ -50,6 +50,8 @@ const Libarary = () => {
     percent: {
       position: 'absolute',
       bottom: '5px', right: '5px',
+      color: '#fff',
+      textShadow: `black 0.1em 0.1em 0.2em`
     },
     selected: {
       border: 'solid 1px red'
