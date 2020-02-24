@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { queryContext } from '../contexts/QueryContext'
 import AddIcon from "@material-ui/icons/Add"
+import {genID} from '../utils/Helper'
 import FileDrop from 'react-file-drop';
 import clsx from "clsx"
 import { makeStyles } from "@material-ui/core/styles";
@@ -60,8 +61,8 @@ const Setting = (props: any) => {
   const changeImg = (curr: any) => {
     setSearchParams((searchParams: any) => ({ ...searchParams, curr }))
   }
-  const delHistory = (src: string) => {
-    const arr = searchParams.history.filter((t: any) => t.data !== src)
+  const delHistory = (id: string) => {
+    const arr = searchParams.history.filter((t: any) => t.id !== id)
     setSearchParams((searchParams: any) => ({ ...searchParams, history: arr }))
   }
   const _search = async (imgSrc: string) => {
@@ -71,7 +72,7 @@ const Setting = (props: any) => {
         setNavTitle(`${res.data.Total} RESULTS`)
         setResults(res.data.Data)
       } else {
-        setNavTitle(<div style={{ alignItems: 'center', display: 'flex', }}><WarnningIcon style={{color:'yellow', marginRight:'50px'}} /><span>SEARCH FAIL</span></div>)
+        setNavTitle(<div style={{ alignItems: 'center', display: 'flex', }}><WarnningIcon style={{ color: 'yellow', marginRight: '50px' }} /><span>SEARCH FAIL</span></div>)
       }
     })
   }
@@ -86,7 +87,7 @@ const Setting = (props: any) => {
       const reader = new FileReader();
       reader.addEventListener("load", function () {
         const { history } = searchParams;
-        const newOne = { file, data: reader.result }
+        const newOne = { file, data: reader.result, id: genID() }
         history.splice(0, 0, newOne);
         setSearchParams({ history, curr: newOne });
       }, false);
@@ -115,12 +116,12 @@ const Setting = (props: any) => {
         </div>
       </FileDrop>
       {searchParams.history.map((item: any, index: number) => {
-        const isSelected = item.data === searchParams.curr.data;
-        const isDelete = item.data === deleteID
+        const isSelected = item.id === searchParams.curr.id;
+        const isDelete = item.id === deleteID
         return (
-          <div key={index} className={clsx(classes.imageWrapper, isSelected ? classes.selectedImage : "")} onClick={() => changeImg(item)} onMouseEnter={() => setDeleteID(item.data)} onMouseLeave={() => { item.data === deleteID && setDeleteID("") }}>
+          <div key={index} className={clsx(classes.imageWrapper, isSelected ? classes.selectedImage : "")} onClick={() => changeImg(item)} onMouseEnter={() => setDeleteID(item.id)} onMouseLeave={() => { item.id === deleteID && setDeleteID("") }}>
             <img style={{ width: '100%' }} src={item.data} alt="" />
-            {isDelete && <div style={{ position: 'absolute', top: 0, right: 0 }}><DeleteIcon classes={{ root: classes.delete }} onClick={() => { delHistory(item.data); return false; }} /></div>}
+            {isDelete && <div style={{ position: 'absolute', top: 0, right: 0 }}><DeleteIcon classes={{ root: classes.delete }} onClick={() => { delHistory(item.id); return false; }} /></div>}
           </div>
         )
       })}

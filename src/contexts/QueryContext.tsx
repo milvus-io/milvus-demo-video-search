@@ -35,7 +35,8 @@ const QueryProvider: FC<{ children: ReactNode }> = ({ children }) => {
     ],
     curr: {
       file: "",
-      data: ""
+      data: "",
+      id: ""
     }
   })
   const showNote = (content: string) => {

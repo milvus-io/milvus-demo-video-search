@@ -15,3 +15,8 @@ export const delayRunFunc = (params: any, func: Function, time: number) => {
 export const cloneObj = (obj: any) => {
   return JSON.parse(JSON.stringify(obj))
 }
+
+export const genID = (prefix: string = 'id') =>
+  `${prefix}_${Math.random()
+    .toString(36)
+    .substr(2, 16)}`;
