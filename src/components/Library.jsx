@@ -19,6 +19,7 @@ const Libarary = () => {
   const [results, setResults] = useState([]);
   const [selectedID, setSelectedID] = useState('');
   const [loadingPercent, setLoadingPercent] = useState(0)
+  const [uploadQueue, setUploadQueue] = useState([]);
 
   const useStyles = makeStyles({
     root: {
@@ -44,9 +45,8 @@ const Libarary = () => {
     cover: {
       position: 'absolute',
       top: 0, right: 0, width: `${100 - loadingPercent}%`, height: '100%',
-      backgroundColor: 'rgba(16, 16, 16, 0.5)',
+      backgroundColor: 'rgba(79,196,249,0.5)',
     },
-
     percent: {
       position: 'absolute',
       bottom: '5px', right: '5px',
@@ -71,12 +71,13 @@ const Libarary = () => {
       alignItems: "center",
       border: '1px solid rgba(176,176,185,1)',
       color: '#fff',
+      cursor: 'pointer'
     },
   });
   const classes = useStyles({});
   const uploader = useRef(null);
   const uploaderID = useRef(null);
-  const ImgUploading = useRef("");
+  const GifUploading = useRef("");
   const TotalContainer = useRef(0);
 
   const onMouseOver = (id) => setSelectedID(id)
@@ -107,44 +108,11 @@ const Libarary = () => {
   }, [])
 
   useEffect(() => {
-    const _finishUpload = () => {
-      TotalContainer.current = TotalContainer.current + 1;
-      setNavTitle(`${TotalContainer.current} VIDEOS IN LIBRARY`)
-      setLoadingPercent(0)
-      setResults(results => [{ name: uploaderID.current, data: ImgUploading.current }, ...results])
-      ImgUploading.current = '';
-    }
-    const _keepProcess = async id => {
-      queryStatus(id).then(res => {
-        if (res && res.status === 200) {
-          const percent = _calPercent(res.data);
-          setLoadingPercent(Math.floor(percent * 100) / 100);
-          percent >= 100
-            ? _finishUpload()
-            : (function () { setLoadingPercent(percent); setTimeout(() => { _keepProcess(id) }, 500) }())
-        } else {
-          setNavTitle(<div style={{ alignItems: 'center', display: 'flex', }}><WarnningIcon style={{ color: 'yellow', marginRight: '50px' }} /><span>SEARCH FAIL</span></div>)
-        }
-      })
-    }
-    const _upload = e => {
-      const file = e.dataTransfer.files[0];
-      const reader = new FileReader();
-      reader.addEventListener("load", function () {
-        ImgUploading.current = reader.result;
-        setNavTitle('UPLOADING...');
-        upload(file).then(res => {
-          if (res && res.status === 200) {
-            const id = res.data.id;
-            uploaderID.current = id;
-            _keepProcess(id);
-          } else {
-            setNavTitle(<div style={{ alignItems: 'center', display: 'flex', }}><WarnningIcon style={{ color: 'yellow', marginRight: '50px' }} /><span>SEARCH FAIL</span></div>)
-          }
-        })
-      }, false);
-      if (file) {
-        reader.readAsDataURL(file);
+    const _upload = async e => {
+      const regex = new RegExp(/\.gif$/i)
+      const files = [...e.dataTransfer.files].filter(item => regex.test(item.name));
+      if (files && files.length > 0) {
+        setUploadQueue(files)
       }
     }
     const Uploader = uploader.current || document.createElement('div');
@@ -153,17 +121,59 @@ const Libarary = () => {
       return true;
     }
     const _onMouseLeave = e => { Uploader.classList.remove('drag-enter'); return true }
-    Uploader.addEventListener('drop', _upload);
-    Uploader.addEventListener('dragenter', _onMouseEnter);
-    Uploader.addEventListener('dragleave', _onMouseLeave);
+    document.body.addEventListener('drop', _upload);
+    document.body.addEventListener('dragenter', _onMouseEnter);
+    document.body.addEventListener('dragleave', _onMouseLeave);
     return () => {
-      Uploader.removeEventListener('drop', _upload);
-      Uploader.removeEventListener('dragenter', _onMouseEnter);
-      Uploader.removeEventListener('dragleave', _onMouseLeave);
+      document.body.removeEventListener('drop', _upload);
+      document.body.removeEventListener('dragenter', _onMouseEnter);
+      document.body.removeEventListener('dragleave', _onMouseLeave);
     }
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [results, setResults])
-
+  useEffect(() => {
+    const _finishOneUpload = () => {
+      TotalContainer.current = TotalContainer.current + 1;
+      setNavTitle(`${TotalContainer.current} VIDEOS IN LIBRARY`)
+      setResults(results => [{ name: uploaderID.current, data: GifUploading.current }, ...results])
+      setUploadQueue(uploadQueue => uploadQueue.splice(1))
+    }
+    const _keepProcess = async id => {
+      queryStatus(id).then(res => {
+        if (res && res.status === 200) {
+          const percent = _calPercent(res.data);
+          setLoadingPercent(Math.floor(percent * 100) / 100);
+          percent >= 100
+            ? _finishOneUpload()
+            : (function () { setLoadingPercent(percent); setTimeout(() => { _keepProcess(id) }, 500) }())
+        } else {
+          setNavTitle(<div style={{ alignItems: 'center', display: 'flex', }}><WarnningIcon style={{ color: 'yellow', marginRight: '50px' }} /><span>UPLOAD FAIL</span></div>)
+        }
+      })
+    }
+    const _uploadOneGif = async file => {
+      const reader = new FileReader();
+      reader.addEventListener("load", function () {
+        GifUploading.current = reader.result;
+        setNavTitle('UPLOADING...');
+        upload(file).then(res => {
+          if (res && res.status === 200) {
+            const id = res.data.id;
+            uploaderID.current = id;
+            _keepProcess(id);
+          } else {
+            setNavTitle(<div style={{ alignItems: 'center', display: 'flex', }}><WarnningIcon style={{ color: 'yellow', marginRight: '50px' }} /><span>UPLOAD FAIL</span></div>)
+            setUploadQueue([]);
+          }
+        })
+      }, false);
+      reader.readAsDataURL(file)
+    }
+    if (uploadQueue.length) {
+      _uploadOneGif(uploadQueue[0])
+    } 
+    //eslint-disable-next-line
+  }, [uploadQueue])
   return (
     <div className={classes.root}>
       <div className={classes.container}>
@@ -171,7 +181,7 @@ const Libarary = () => {
           navTitle === 'UPLOADING...'
             ? (
               <div className={classes.imgWrapper} >
-                <GifPlayer gif={ImgUploading.current} autoplay />
+                <GifPlayer gif={GifUploading.current} autoplay />
                 {loadingPercent < 100 && (
                   <>
                     <div className={classes.cover} />
