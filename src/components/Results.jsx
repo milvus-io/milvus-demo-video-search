@@ -10,6 +10,7 @@ var shuffle = require('lodash.shuffle')
 
 const Results = props => {
   const { searchParams } = useContext(queryContext)
+  const { results, setResults } = props;
   const isMobile = !useMediaQuery("(min-width:1000px)");
   const useStyles = makeStyles({
     root: {
@@ -45,7 +46,6 @@ const Results = props => {
     }
   });
   const classes = useStyles({});
-  const { results, setResults } = props;
 
   const isSearchChange = useRef(true);
   useEffect(() => {
@@ -68,6 +68,13 @@ const Results = props => {
   return (
     <div className={classes.root}>
       <div className={classes.container}>
+        {results.length === 0 && (
+          <>
+            {[1, 2, 3, 4, 5].map((i, index) => {
+              return <div key={index} className={classes.imgWrapper} style={{ visibility: 'hidden', height: '300px' }}></div>
+            })}
+          </>
+        )}
         <FlipMove duration={500}>
           {results.map((data, index) => {
             return (
@@ -80,6 +87,13 @@ const Results = props => {
             )
           })}
         </FlipMove>
+        {results.length < 5 && (
+          <>
+            {new Array(6 - results.length).fill(1).map((i, index) => {
+              return <div key={`key${index}`} className={classes.imgWrapper} style={{ visibility: 'hidden', height: '300px' }}></div>
+            })}
+          </>
+        )}
       </div>
     </div>
   );
