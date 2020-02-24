@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { queryContext } from '../contexts/QueryContext'
 import AddIcon from "@material-ui/icons/Add"
-import {genID} from '../utils/Helper'
+import { genID } from '../utils/Helper'
 import FileDrop from 'react-file-drop';
 import clsx from "clsx"
 import { makeStyles } from "@material-ui/core/styles";
@@ -70,7 +70,7 @@ const Setting = (props: any) => {
     search(imgSrc).then((res: any) => {
       if (res && res.status === 200) {
         setNavTitle(`${res.data.Total} RESULTS`)
-        setResults(res.data.Data)
+        setResults((results: any) => res.data.Data)
       } else {
         setNavTitle(<div style={{ alignItems: 'center', display: 'flex', }}><WarnningIcon style={{ color: 'yellow', marginRight: '50px' }} /><span>SEARCH FAIL</span></div>)
       }
