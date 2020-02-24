@@ -24,11 +24,11 @@ const Setting = (props: any) => {
       backgroundColor: "#1F2023",
     },
     addWrapper: {
-      width: "100%",
+      width: "calc(100%-2px)",
       marginBottom: '5px',
       height: '15vh',
       background: 'rgba(255,255,255,0.1)',
-      border: '2px solid rgba(176,176,185,1)',
+      border: '1px solid rgba(176,176,185,1)',
       display: "flex",
       justifyContent: "center",
       alignItems: "center"
