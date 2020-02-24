@@ -12,13 +12,17 @@ import './Setting.css'
 
 const Setting = (props: any) => {
   const isMobile = !useMediaQuery("(min-width:1000px)");
+  const { results, setResults } = props;
+  const { search, setNavTitle, searchParams, setSearchParams } = useContext(queryContext)
   const useStyles = makeStyles({
     setting: {
       position: "relative",
       minWidth: isMobile ? "auto" : "20%",
       maxWidth: isMobile ? "auto" : "20%",
       padding: isMobile ? "20px" : "20px 20px 0 20px",
-      borderWidth: "1px",
+      borderWidth: 0,
+      borderRight: `solid 1px ${results.length ? "" : '!important'} `,
+      borderImage: 'linear-gradient(#fff, rgba(250,250,250,0)) 0 100%',
       color: "#E4E4E6",
       overflowY: "auto",
       backgroundColor: "#1F2023",
@@ -53,8 +57,6 @@ const Setting = (props: any) => {
       color: 'rgba(63, 156, 209, 1) !important',
     },
   });
-  const { setResults } = props;
-  const { search, setNavTitle, searchParams, setSearchParams } = useContext(queryContext)
   const classes = useStyles({});
   const [deleteID, setDeleteID] = useState('');
   const uploader = useRef(null);

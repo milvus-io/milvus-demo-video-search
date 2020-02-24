@@ -20,11 +20,19 @@ const RootContainer: React.FC = () => {
       position: 'relative'
     },
     nav: {
+      position: 'relative',
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
       backgroundColor: "#1F2023",
-      color: '#fff'
+      color: '#fff',
+      paddingBottom: '5px',
+      borderBottom: "solid 1px rgba(255, 255, 255, .5)",
+    },
+    title: {
+      letterSpacing: 3,
+      fontFamily: 'Roboto-Medium,Roboto',
+      fontWeight: 500
     },
     logo: {
       paddingLeft: '30px',
@@ -37,6 +45,18 @@ const RootContainer: React.FC = () => {
       display: 'flex',
       alignItems: 'center',
       cursor: 'pointer'
+    },
+    note: {
+      position: 'absolute',
+      fontSize: '4px',
+      fontFamily: `Roboto-Regular,Roboto`,
+      fontWeight: 400,
+      color: `rgba(250,250,250,1)`,
+      letterSpacing: `1px`,
+      top: 0,
+      left: `80px`,
+      transform: 'scale(.7)',
+      opacity: .8
     },
     selectedWrapper: {
       borderRadius: '50%',
@@ -62,11 +82,12 @@ const RootContainer: React.FC = () => {
     <div className={classes.root}>
       <div className={classes.nav}>
         <img className={classes.logo} src={Logo} width="150px" alt="logo" />
-        <h3>{navTitle}</h3>
+        <h3 className={classes.title}>{navTitle}</h3>
         <div className={classes.pageSwitcher} onClick={() => { setPage(page === 'search' ? 'library' : 'search'); page === 'search' && setNavTitle('VIDEO SEARCH'); }}>
-          <div className={page === 'search' ? classes.selectedWrapper : classes.noneSelectedWrapper}><SearchIcon /></div>
-          <div className={page === 'library' ? classes.selectedWrapper : classes.noneSelectedWrapper}><SettingsIcon /></div>
+          <div className={page === 'search' ? classes.selectedWrapper : classes.noneSelectedWrapper}><SearchIcon style={{ fontSize: '1rem' }} /></div>
+          <div className={page === 'library' ? classes.selectedWrapper : classes.noneSelectedWrapper}><SettingsIcon style={{ fontSize: '1rem' }} /></div>
         </div>
+        <div className={classes.note}>POWERED BY</div>
       </div>
       <div className={classes.content}>
         <SwitchTransition mode='out-in'>

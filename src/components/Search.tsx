@@ -14,7 +14,7 @@ const SearchPage: React.FC = () => {
   const [results, setResults]: any = useState([]);
   return (
     <div className={classes.root}>
-      <Setting setResults={setResults} />
+      <Setting results={results} setResults={setResults} />
       <Results results={results} setResults={setResults} />
     </div>
   );

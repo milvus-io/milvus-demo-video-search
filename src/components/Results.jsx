@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useContext } from "react";
+import SettingsIcon from "@material-ui/icons/Settings"
 import { queryContext } from '../contexts/QueryContext'
 import FlipMove from 'react-flip-move';
 import clsx from 'clsx';
@@ -19,7 +20,8 @@ const Results = props => {
       overflowY: "auto",
       padding: isMobile ? "10px" : "20px",
       display: "flex",
-      flexDirection: "column",
+      flexDirection: results.length ? "column" : "row",
+      color: '#fff'
     },
     container: {
       width: '100%',
@@ -67,34 +69,49 @@ const Results = props => {
   }, [searchParams.curr])
   return (
     <div className={classes.root}>
-      <div className={classes.container}>
-        {results.length === 0 && (
-          <>
-            {[1, 2, 3, 4, 5].map((i, index) => {
-              return <div key={index} className={classes.imgWrapper} style={{ visibility: 'hidden', height: '300px' }}></div>
-            })}
-          </>
-        )}
-        <FlipMove duration={500}>
-          {results.map((data, index) => {
-            return (
-              <div className={clsx(classes.imgWrapper, index === 0 ? 'best' : '')} key={data.name}>
-                <GifPlayer gif={data.data} autoplay />
-                <div className={classes.info}>
-                  <p>{data.distance.toFixed(5)}</p>
-                </div>
-              </div>
-            )
-          })}
-        </FlipMove>
-        {results.length < 5 && (
-          <>
-            {new Array(6 - results.length).fill(1).map((i, index) => {
-              return <div key={`key${index}`} className={classes.imgWrapper} style={{ visibility: 'hidden', height: '300px' }}></div>
-            })}
-          </>
-        )}
-      </div>
+      {results.length === 0
+        ? (
+          <div style={{
+            fontFamily: `Roboto-Regular,Roboto`,
+            fontWeight: 400,
+            color: `rgba(250,250,250,1)`
+          }}>
+            <p style={{ marginBottom: '20px' }}>To search, drop an image or video file.</p>
+            <div style={{
+              display: `flex`,
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}>
+              <p>Click</p>&nbsp;
+              <SettingsIcon />&nbsp;
+              <p>to see all videos in the library</p>
+            </div>
+          </div>
+        )
+        : (
+          <div className={classes.container}>
+            <FlipMove duration={500}>
+              {results.map((data, index) => {
+                return (
+                  <div className={clsx(classes.imgWrapper, index === 0 ? 'best' : '')} key={data.name}>
+                    <GifPlayer gif={data.data} autoplay />
+                    <div className={classes.info}>
+                      <p>{data.distance.toFixed(5)}</p>
+                    </div>
+                  </div>
+                )
+              })}
+            </FlipMove>
+            {results.length < 5 && (
+              <>
+                {new Array(6 - results.length).fill(1).map((i, index) => {
+                  return <div key={`key${index}`} className={classes.imgWrapper} style={{ visibility: 'hidden', height: '300px' }}></div>
+                })}
+              </>
+            )}
+          </div>
+        )
+      }
     </div>
   );
 };
