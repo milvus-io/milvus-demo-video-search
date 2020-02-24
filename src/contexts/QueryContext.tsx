@@ -52,7 +52,7 @@ const QueryProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const url = URL.SEARCH;
     const bodyFormData = new FormData()
     bodyFormData.set('file', params);
-    bodyFormData.set('Num', '5');
+    bodyFormData.set('Num', '50');
     return await axiosInstance.post(url, bodyFormData).catch(errorParser);
   };
   const upload = async (params: any) => {
@@ -72,7 +72,7 @@ const QueryProvider: FC<{ children: ReactNode }> = ({ children }) => {
     params = {
       "Reverse": true,
       "PageNum": 0,
-      "PerPageCount": 100
+      "PerPageCount": 50
     }
     return await axiosInstance.get(url, { params }).catch(errorParser);
   }
