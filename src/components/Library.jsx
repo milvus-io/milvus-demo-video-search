@@ -119,7 +119,7 @@ const Libarary = () => {
           setLoadingPercent(Math.floor(percent * 100) / 100);
           percent >= 100
             ? _finishUpload()
-            : (function () { setLoadingPercent(percent); _keepProcess(id) }())
+            : (function () { setLoadingPercent(percent); setTimeout(() => { _keepProcess(id) }, 500) }())
         } else {
           setNavTitle(<div style={{ alignItems: 'center', display: 'flex', }}><WarnningIcon style={{ color: 'yellow', marginRight: '50px' }} /><span>SEARCH FAIL</span></div>)
         }
