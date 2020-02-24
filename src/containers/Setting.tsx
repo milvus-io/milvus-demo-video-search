@@ -100,13 +100,13 @@ const Setting = (props: any) => {
     const Uploader = uploader.current || document.createElement('div');
     const onDragEnter = () => { Uploader.classList.add('drag-enter') };
     const onDragLeave = () => { Uploader.classList.remove('drag-enter'); }
-    Uploader.addEventListener('dragenter', onDragEnter)
-    Uploader.addEventListener('dragleave', onDragLeave)
-    Uploader.addEventListener('drop', _addSearchImg);
+    document.body.addEventListener('dragenter', onDragEnter)
+    document.body.addEventListener('dragleave', onDragLeave)
+    document.body.addEventListener('drop', _addSearchImg);
     return () => {
-      Uploader.removeEventListener('dragenter', onDragEnter)
-      Uploader.removeEventListener('dragleave', onDragLeave)
-      Uploader.removeEventListener('drop', _addSearchImg);
+      document.body.removeEventListener('dragenter', onDragEnter)
+      document.body.removeEventListener('dragleave', onDragLeave)
+      document.body.removeEventListener('drop', _addSearchImg);
     }
     // eslint-disable-next-line
   }, [searchParams.curr])
