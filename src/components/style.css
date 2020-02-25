@@ -12,7 +12,7 @@ h3 {
 }
 
 .best {
-  border: 1px solid rgb(90, 186, 231);
+  border-color: rgb(90, 186, 231) !important;
   margin: 0 1px 1px 0;
   opacity: 1 !important;
 }
@@ -21,17 +21,22 @@ h3 {
   opacity: 0;
   transform: translateY(-100%);
 }
+
 .fade-enter-active {
   transform: translateX(0);
   opacity: 1;
 }
+
 .fade-exit {
   transform: translateX(0);
 }
+
 .fade-exit-active {
   opacity: 0;
   transform: translateY(100%);
 }
-.fade-enter-active, .fade-exit-active {
+
+.fade-enter-active,
+.fade-exit-active {
   transition: opacity .5s, transform .5s ease-in-out;
 }
