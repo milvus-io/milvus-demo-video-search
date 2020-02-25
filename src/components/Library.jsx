@@ -12,7 +12,7 @@ var GifPlayer = require('react-gif-player')
 const _calPercent = ({ percent, state }) => {
   return (state !== 'predict' ? percent * 100 / 2 : 50 + percent * 100 / 2).toFixed(2)
 }
-// TODO: upload not work when upload once
+const regex = new RegExp(/\.gif$/i)
 const Libarary = () => {
   const { queryLibrary, navTitle, setNavTitle, upload, queryStatus, delVideo } = useContext(queryContext);
   const isMobile = !useMediaQuery("(min-width:1000px)");
@@ -36,8 +36,12 @@ const Libarary = () => {
       columnGap: '3px',
       position: 'relative',
     },
+    noResContainer: {
+      width: '17%',
+    },
     imgWrapper: {
       width: '100%',
+      minHeight: '40px',
       display: 'block',
       position: 'relative',
       border: 'solid 1px transparent',
@@ -63,7 +67,7 @@ const Libarary = () => {
     },
     addWrapper: {
       width: "100%",
-      marginBottom: '3px',
+      marginBottom: results.length ?'3px':'20px',
       height: '15vh',
       background: 'rgba(255,255,255,0.1)',
       display: "flex",
@@ -76,23 +80,35 @@ const Libarary = () => {
   });
   const classes = useStyles({});
   const uploader = useRef(null);
+  const FileUploader = useRef(null);
   const uploaderID = useRef(null);
   const GifUploading = useRef("");
   const TotalContainer = useRef(0);
+  const isSubscription = useRef(true);
 
   const onMouseOver = (id) => setSelectedID(id)
   const onMouseLeave = (id) => selectedID === id && setSelectedID("")
   const deleteGif = (name) => {
     setResults(results.filter(result => result.name !== name))
     delVideo(name).then(res => {
-      if (res && res.status === 200) {
+      if (res && res.status === 200 && isSubscription.current) {
         TotalContainer.current = TotalContainer.current - 1;
         setNavTitle(`${TotalContainer.current} VIDEOS IN LIBRARY`)
       }
     })
   }
+  const clickUpload = () => {
+    if (FileUploader.current) {
+      FileUploader.current.onchange = (e) => {
+        const files = [...e.target.files].filter(item => regex.test(item.name));
+        setUploadQueue(files);
+      }
+      FileUploader.current.click();
+    }
+  }
 
   useEffect(() => {
+    isSubscription.current = true;
     const query = async () => {
       queryLibrary().then(res => {
         if (res && res.status === 200) {
@@ -104,34 +120,49 @@ const Libarary = () => {
       })
     }
     query()
+    return () => {
+      isSubscription.current = false;
+    }
     //eslint-disable-next-line
   }, [])
 
   useEffect(() => {
+    isSubscription.current = true;
     const _upload = async e => {
-      const regex = new RegExp(/\.gif$/i)
       const files = [...e.dataTransfer.files].filter(item => regex.test(item.name));
-      if (files && files.length > 0) {
+      if (files && files.length > 0 && isSubscription.current) {
         setUploadQueue(files)
       }
     }
     const Uploader = uploader.current || document.createElement('div');
     const _onMouseEnter = e => {
-      Uploader.classList.add('drag-enter')
-      return true;
+      if (uploader.current) {
+        uploader.current.classList.add('drag-enter')
+      }
     }
-    const _onMouseLeave = e => { Uploader.classList.remove('drag-enter'); return true }
+    const _onMouseLeave = e => {
+      if (uploader.current) {
+        uploader.current.classList.remove('drag-enter');
+      }
+    }
     document.body.addEventListener('drop', _upload);
     document.body.addEventListener('dragenter', _onMouseEnter);
     document.body.addEventListener('dragleave', _onMouseLeave);
+    Uploader.addEventListener('mouseenter', _onMouseEnter);
+    Uploader.addEventListener('mouseleave', _onMouseLeave);
     return () => {
       document.body.removeEventListener('drop', _upload);
       document.body.removeEventListener('dragenter', _onMouseEnter);
       document.body.removeEventListener('dragleave', _onMouseLeave);
+      Uploader.addEventListener('mouseenter', _onMouseEnter);
+      Uploader.addEventListener('mouseleave', _onMouseLeave);
+      isSubscription.current = false;
     }
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [results, setResults])
   useEffect(() => {
+    isSubscription.current = true;
+    let timeout;
     const _finishOneUpload = () => {
       TotalContainer.current = TotalContainer.current + 1;
       setNavTitle(`${TotalContainer.current} VIDEOS IN LIBRARY`)
@@ -140,14 +171,16 @@ const Libarary = () => {
     }
     const _keepProcess = async id => {
       queryStatus(id).then(res => {
-        if (res && res.status === 200) {
-          const percent = _calPercent(res.data);
-          setLoadingPercent(Math.floor(percent * 100) / 100);
-          percent >= 100
-            ? _finishOneUpload()
-            : (function () { setLoadingPercent(percent); setTimeout(() => { _keepProcess(id) }, 500) }())
-        } else {
-          setNavTitle(<div style={{ alignItems: 'center', display: 'flex', }}><WarnningIcon style={{ color: 'yellow', marginRight: '50px' }} /><span>UPLOAD FAIL</span></div>)
+        if (isSubscription.current) {
+          if (res && res.status === 200) {
+            const percent = _calPercent(res.data);
+            setLoadingPercent(Math.floor(percent * 100) / 100);
+            percent >= 100
+              ? _finishOneUpload()
+              : (function () { setLoadingPercent(percent); timeout = setTimeout(() => { _keepProcess(id) }, 500) }())
+          } else {
+            setNavTitle(<div style={{ alignItems: 'center', display: 'flex', }}><WarnningIcon style={{ color: 'yellow', marginRight: '50px' }} /><span>UPLOAD FAIL</span></div>)
+          }
         }
       })
     }
@@ -157,13 +190,15 @@ const Libarary = () => {
         GifUploading.current = reader.result;
         setNavTitle('UPLOADING...');
         upload(file).then(res => {
-          if (res && res.status === 200) {
-            const id = res.data.id;
-            uploaderID.current = id;
-            _keepProcess(id);
-          } else {
-            setNavTitle(<div style={{ alignItems: 'center', display: 'flex', }}><WarnningIcon style={{ color: 'yellow', marginRight: '50px' }} /><span>UPLOAD FAIL</span></div>)
-            setUploadQueue([]);
+          if (isSubscription.current) {
+            if (res && res.status === 200) {
+              const id = res.data.id;
+              uploaderID.current = id;
+              _keepProcess(id);
+            } else {
+              setNavTitle(<div style={{ alignItems: 'center', display: 'flex', }}><WarnningIcon style={{ color: 'yellow', marginRight: '50px' }} /><span>UPLOAD FAIL</span></div>)
+              setUploadQueue([]);
+            }
           }
         })
       }, false);
@@ -171,12 +206,17 @@ const Libarary = () => {
     }
     if (uploadQueue.length) {
       _uploadOneGif(uploadQueue[0])
-    } 
+    }
+    return () => {
+      timeout && clearTimeout(timeout)
+      isSubscription.current = false;
+    }
     //eslint-disable-next-line
   }, [uploadQueue])
+
   return (
     <div className={classes.root}>
-      <div className={classes.container}>
+      <div className={results.length ? classes.container : classes.noResContainer}>
         {
           navTitle === 'UPLOADING...'
             ? (
@@ -191,41 +231,58 @@ const Libarary = () => {
               </div>
             ) : (
               <FileDrop>
-                <div className={classes.addWrapper} ref={uploader}>
+                <div className={classes.addWrapper} ref={uploader} onClick={() => clickUpload()} >
                   <AddIcon />
+                  <input type="file" style={{ display: 'none' }} ref={FileUploader} multiple />
                 </div>
               </FileDrop>
             )
         }
-        {results.length === 0 && (
-          <>
-            {[1, 2, 3, 4, 5].map((i, index) => {
-              return <div key={index} className={classes.imgWrapper} style={{ visibility: 'hidden', height: '300px' }}></div>
-            })}
-          </>
-        )}
-        <FlipMove duration={500}>
-          {results.map((data) => {
-            const isSelected = data.name === selectedID;
-            return (
-              <div className={`${classes.imgWrapper} ${isSelected ? classes.selected : ""}`}
-                key={data.name}
-                onMouseOver={() => { onMouseOver(data.name); }}
-                onMouseLeave={() => { onMouseLeave(data.name); }}
-              >
-                <GifPlayer gif={data.data} autoplay />
-                {isSelected && <div style={{ position: 'absolute', top: 0, right: 0 }}><DeleteIcon classes={{ root: classes.delete }} onClick={() => deleteGif(data.name)} /></div>}
+        {results.length === 0 ?
+          (
+            <div style={{
+              fontFamily: `Roboto-Regular,Roboto`,
+              fontWeight: 400,
+              color: `rgba(250,250,250,1)`,
+              minWidth:'400px'
+            }}>
+              <div style={{
+                display: `flex`,
+                justifyContent: 'start',
+                alignItems: 'center'
+              }}>
+                <p>Drop or click</p>&nbsp;
+                <AddIcon />&nbsp;
+                <p>to upload videos to the library</p>
               </div>
-            )
-          })}
-        </FlipMove>
-        {results.length < 6 && (
-          <>
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((i, index) => {
-              return <div key={`key${index}`} className={classes.imgWrapper} style={{ visibility: 'hidden', height: '300px' }}></div>
-            })}
-          </>
-        )}
+            </div>
+          ) : (
+            <>
+              <FlipMove duration={500}>
+                {results.map((data) => {
+                  const isSelected = data.name === selectedID;
+                  return (
+                    <div className={`${classes.imgWrapper} ${isSelected ? classes.selected : ""}`}
+                      key={data.name}
+                      onMouseOver={() => { onMouseOver(data.name); }}
+                      onMouseLeave={() => { onMouseLeave(data.name); }}
+                    >
+                      <GifPlayer gif={data.data} autoplay />
+                      {isSelected && <div style={{ position: 'absolute', top: 0, right: 0 }}><DeleteIcon classes={{ root: classes.delete }} onClick={() => deleteGif(data.name)} /></div>}
+                    </div>
+                  )
+                })}
+              </FlipMove>
+              {results.length < 6 && (
+                <>
+                  {[1, 2, 3, 4, 5, 6, 7, 8].map((i, index) => {
+                    return <div key={`key${index}`} className={classes.imgWrapper} style={{ visibility: 'hidden', height: '300px' }}></div>
+                  })}
+                </>
+              )}
+            </>
+          )}
+
       </div>
     </div>)
 };

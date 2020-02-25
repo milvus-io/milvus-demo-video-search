@@ -33,8 +33,8 @@ const Results = props => {
       width: '100%',
       display: 'block',
       position: 'relative',
-      marginBottom: '3px',
-      opacity: 0.75
+      opacity: 0.75,
+      border: 'solid 1px transparent',
     },
     info: {
       position: 'absolute',
@@ -55,7 +55,10 @@ const Results = props => {
     if (isSearchChange.current) {
       isSearchChange.current = false;
       timeout = setTimeout(() => {
-        setResults(shuffle(results));
+        if (results.length) {
+          const first = results.shift();
+          setResults([first, ...shuffle(results)])
+        }
       }, 1500)
     }
     return () => {
