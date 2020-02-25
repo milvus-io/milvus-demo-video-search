@@ -60,6 +60,7 @@ const Setting = (props: any) => {
   const classes = useStyles({});
   const [deleteID, setDeleteID] = useState('');
   const uploader = useRef(null);
+  const isSubscription = useRef(true);
   const changeImg = (curr: any) => {
     setSearchParams((searchParams: any) => ({ ...searchParams, curr }))
   }
@@ -70,16 +71,19 @@ const Setting = (props: any) => {
   const _search = async (imgSrc: string) => {
     setNavTitle('SEARCHING...');
     search(imgSrc).then((res: any) => {
-      if (res && res.status === 200) {
-        setNavTitle(`${res.data.Total} RESULTS`)
-        setResults((results: any) => res.data.Data)
-      } else {
-        setNavTitle(<div style={{ alignItems: 'center', display: 'flex', }}><WarnningIcon style={{ color: 'yellow', marginRight: '50px' }} /><span>SEARCH FAIL</span></div>)
+      if (isSubscription.current) {
+        if (res && res.status === 200) {
+          setNavTitle(`${res.data.Total} RESULTS`)
+          setResults((results: any) => res.data.Data)
+        } else {
+          setNavTitle(<div style={{ alignItems: 'center', display: 'flex', }}><WarnningIcon style={{ color: 'yellow', marginRight: '50px' }} /><span>SEARCH FAIL</span></div>)
+        }
       }
     })
   }
 
   useEffect(() => {
+    isSubscription.current = true;
     if (searchParams.curr.file) {
       _search(searchParams.curr.file);
     }
@@ -107,6 +111,7 @@ const Setting = (props: any) => {
       document.body.removeEventListener('dragenter', onDragEnter)
       document.body.removeEventListener('dragleave', onDragLeave)
       document.body.removeEventListener('drop', _addSearchImg);
+      isSubscription.current = false;
     }
     // eslint-disable-next-line
   }, [searchParams.curr])
