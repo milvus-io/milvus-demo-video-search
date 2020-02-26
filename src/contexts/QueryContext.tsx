@@ -71,7 +71,7 @@ const QueryProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const url = URL.VIDEO;
     params = {
       "Reverse": true,
-      "PageNum": 0,
+      "PageNum": params.page,
       "PerPageCount": 50
     }
     return await axiosInstance.get(url, { params }).catch(errorParser);

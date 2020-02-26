@@ -20,6 +20,7 @@ const Libarary = () => {
   const [selectedID, setSelectedID] = useState('');
   const [loadingPercent, setLoadingPercent] = useState(0)
   const [uploadQueue, setUploadQueue] = useState([]);
+  const [page, setPage] = useState(0)
 
   const useStyles = makeStyles({
     root: {
@@ -67,7 +68,7 @@ const Libarary = () => {
     },
     addWrapper: {
       width: "100%",
-      marginBottom: results.length ?'3px':'20px',
+      marginBottom: results.length ? '3px' : '20px',
       height: '15vh',
       background: 'rgba(255,255,255,0.1)',
       display: "flex",
@@ -85,6 +86,9 @@ const Libarary = () => {
   const GifUploading = useRef("");
   const TotalContainer = useRef(0);
   const isSubscription = useRef(true);
+  const isKeepQuery = useRef(true);
+  const timeout = useRef(null);
+  const Root = useRef(null);
 
   const onMouseOver = (id) => setSelectedID(id)
   const onMouseLeave = (id) => selectedID === id && setSelectedID("")
@@ -110,22 +114,34 @@ const Libarary = () => {
   useEffect(() => {
     isSubscription.current = true;
     const query = async () => {
-      queryLibrary().then(res => {
-        if (res && res.status === 200) {
-          const { Data, Total } = res.data;
-          setResults(Data)
-          TotalContainer.current = Total;
-          setNavTitle(`${Total} VIDEOS IN LIBRARY`)
-        }
-      })
+      if (timeout.current) {
+        clearTimeout(timeout.current);
+      }
+      timeout.current = setTimeout(() => {
+        setNavTitle(`Fetching Data...`)
+        queryLibrary({ page }).then(res => {
+          if (res && res.status === 200 && isSubscription.current) {
+            const { Data, Total } = res.data;
+            if (Total === 0) {
+              isKeepQuery.current = false;
+            }
+            setResults(results => [...results, ...Data])
+            TotalContainer.current = Total + TotalContainer.current;
+            setNavTitle(`${TotalContainer.current} VIDEOS IN LIBRARY`)
+          }
+        })
+      }, 400)
     }
-    query()
+    if (isKeepQuery.current) {
+      query()
+    }
     return () => {
       isSubscription.current = false;
     }
     //eslint-disable-next-line
-  }, [])
+  }, [page])
 
+  // bind drag and drop event
   useEffect(() => {
     isSubscription.current = true;
     const _upload = async e => {
@@ -150,12 +166,26 @@ const Libarary = () => {
     document.body.addEventListener('dragleave', _onMouseLeave);
     Uploader.addEventListener('mouseenter', _onMouseEnter);
     Uploader.addEventListener('mouseleave', _onMouseLeave);
+
+    const _fetch = (e) => {
+      const clientHeight = document.getElementById('content').clientHeight;
+      const scrollHeight = document.getElementById('content').scrollHeight;
+      const scrollTop = document.getElementById('content').scrollTop;
+      //TODO: why scrollHeight would be larger than clientHeight + scrollTop ?
+      if (scrollHeight === clientHeight + scrollTop) {
+        setPage(page + 1);
+      }
+    };
+    window.addEventListener("scroll", _fetch);
+    window.addEventListener("mousewheel", _fetch);
     return () => {
       document.body.removeEventListener('drop', _upload);
       document.body.removeEventListener('dragenter', _onMouseEnter);
       document.body.removeEventListener('dragleave', _onMouseLeave);
       Uploader.addEventListener('mouseenter', _onMouseEnter);
       Uploader.addEventListener('mouseleave', _onMouseLeave);
+      window.removeEventListener("scroll", _fetch);
+      window.removeEventListener("mousewheel", _fetch);
       isSubscription.current = false;
     }
     //eslint-disable-next-line react-hooks/exhaustive-deps
@@ -215,7 +245,7 @@ const Libarary = () => {
   }, [uploadQueue])
 
   return (
-    <div className={classes.root}>
+    <div className={classes.root} ref={Root}>
       <div className={results.length ? classes.container : classes.noResContainer}>
         {
           navTitle === 'UPLOADING...'
@@ -244,7 +274,7 @@ const Libarary = () => {
               fontFamily: `Roboto-Regular,Roboto`,
               fontWeight: 400,
               color: `rgba(250,250,250,1)`,
-              minWidth:'400px'
+              minWidth: '400px'
             }}>
               <div style={{
                 display: `flex`,

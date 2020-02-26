@@ -89,7 +89,7 @@ const RootContainer: React.FC = () => {
         </div>
         <div className={classes.note}>POWERED BY</div>
       </div>
-      <div className={classes.content}>
+      <div className={classes.content} id='content'>
         <SwitchTransition mode='out-in'>
           <CSSTransition classNames='fade' timeout={500} key={page === 'search' ? "on" : "off"} >
             {page === 'search' ? <Search /> : <Library />}
