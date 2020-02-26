@@ -64,21 +64,22 @@ const Setting = (props) => {
   const isSubscription = useRef(true);
   const FileUploader = useRef(null);
   const changeImg = (curr) => {
-    setSearchParams((searchParams) => ({ ...searchParams, curr }))
+    setSearchParams(searchParams => ({ ...searchParams, curr }))
   }
   const delHistory = (id) => {
     const arr = searchParams.history.filter((t) => t.id !== id)
-    setSearchParams((searchParams) => ({ ...searchParams, history: arr }))
+    setSearchParams(searchParams => ({ ...searchParams, history: arr }))
   }
   const _search = async (imgSrc) => {
     setNavTitle('SEARCHING...');
+    setResults(results => [])
     search(imgSrc).then((res) => {
       if (isSubscription.current) {
         if (res && res.status === 200) {
           setNavTitle(`${res.data.Total} RESULTS`)
-          setResults((results) => res.data.Data)
+          setResults(results => res.data.Data)
         } else {
-          setNavTitle(<div style={{ alignItems: 'center', display: 'flex', }}><WarnningIcon style={{ color: 'yellow', marginRight: '50px' }} /><span>SEARCH FAIL</span></div>)
+          setNavTitle(<div style={{ alignItems: 'center', display: 'flex', }}><WarnningIcon style={{ color: 'yellow', marginRight: '20px' }} /><span>SEARCH FAIL</span></div>)
         }
       }
     })
@@ -139,17 +140,17 @@ const Setting = (props) => {
         </div>
       </FileDrop>
       {
-    searchParams.history.map((item, index) => {
-      const isSelected = item.id === searchParams.curr.id;
-      const isDelete = item.id === deleteID
-      return (
-        <div key={index} className={clsx(classes.imageWrapper, isSelected ? classes.selectedImage : "")} onClick={() => changeImg(item)} onMouseEnter={() => setDeleteID(item.id)} onMouseLeave={() => { item.id === deleteID && setDeleteID("") }}>
-          <img style={{ width: '100%' }} src={item.data} alt="" />
-          {isDelete && <div style={{ position: 'absolute', top: 0, right: 0 }}><DeleteIcon classes={{ root: classes.delete }} onClick={() => { delHistory(item.id); return false; }} /></div>}
-        </div>
-      )
-    })
-  }
+        searchParams.history.map((item, index) => {
+          const isSelected = item.id === searchParams.curr.id;
+          const isDelete = item.id === deleteID
+          return (
+            <div key={index} className={clsx(classes.imageWrapper, isSelected ? classes.selectedImage : "")} onClick={() => changeImg(item)} onMouseEnter={() => setDeleteID(item.id)} onMouseLeave={() => { item.id === deleteID && setDeleteID("") }}>
+              <img style={{ width: '100%' }} src={item.data} alt="" />
+              {isDelete && <div style={{ position: 'absolute', top: 0, right: 0 }}><DeleteIcon classes={{ root: classes.delete }} onClick={() => { delHistory(item.id); return false; }} /></div>}
+            </div>
+          )
+        })
+      }
     </div >
   );
 };

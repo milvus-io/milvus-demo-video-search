@@ -31,6 +31,7 @@ const Results = props => {
     },
     imgWrapper: {
       width: '100%',
+      minHeight: '40px',
       display: 'block',
       position: 'relative',
       opacity: 0.75,
