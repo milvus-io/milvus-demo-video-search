@@ -179,7 +179,7 @@ const Libarary = () => {
               ? _finishOneUpload()
               : (function () { setLoadingPercent(percent); timeout = setTimeout(() => { _keepProcess(id) }, 500) }())
           } else {
-            setNavTitle(<div style={{ alignItems: 'center', display: 'flex', }}><WarnningIcon style={{ color: 'yellow', marginRight: '50px' }} /><span>UPLOAD FAIL</span></div>)
+            setNavTitle(<div style={{ alignItems: 'center', display: 'flex', }}><WarnningIcon style={{ color: 'yellow', marginRight: '20px' }} /><span>UPLOAD FAIL</span></div>)
           }
         }
       })
@@ -196,7 +196,7 @@ const Libarary = () => {
               uploaderID.current = id;
               _keepProcess(id);
             } else {
-              setNavTitle(<div style={{ alignItems: 'center', display: 'flex', }}><WarnningIcon style={{ color: 'yellow', marginRight: '50px' }} /><span>UPLOAD FAIL</span></div>)
+              setNavTitle(<div style={{ alignItems: 'center', display: 'flex', }}><WarnningIcon style={{ color: 'yellow', marginRight: '20px' }} /><span>UPLOAD FAIL</span></div>)
               setUploadQueue([]);
             }
           }
