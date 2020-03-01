@@ -72,12 +72,11 @@ const Setting = (props) => {
   }
   const _search = async (imgSrc) => {
     setNavTitle('SEARCHING...');
-    setResults(results => [])
     search(imgSrc).then((res) => {
       if (isSubscription.current) {
         if (res && res.status === 200) {
           setNavTitle(`${res.data.Total} RESULTS`)
-          setResults(results => res.data.Data)
+          setResults(res.data.Data)
         } else {
           setNavTitle(<div style={{ alignItems: 'center', display: 'flex', }}><WarnningIcon style={{ color: 'yellow', marginRight: '20px' }} /><span>SEARCH FAIL</span></div>)
         }
