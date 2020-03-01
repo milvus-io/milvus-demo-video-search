@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
+import Masonry from 'react-masonry-component';
 import WarnningIcon from '@material-ui/icons/Warning'
-import FlipMove from 'react-flip-move';
 import { queryContext } from '../contexts/QueryContext'
 import { makeStyles } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
-import FileDrop from 'react-file-drop';
 import AddIcon from "@material-ui/icons/Add"
 import DeleteIcon from "@material-ui/icons/Delete"
 var GifPlayer = require('react-gif-player')
@@ -13,6 +12,9 @@ const _calPercent = ({ percent, state }) => {
   return (state !== 'predict' ? percent * 100 / 2 : 50 + percent * 100 / 2).toFixed(2)
 }
 const regex = new RegExp(/\.gif$/i)
+const masonryOptions = {
+  transitionDuration: 500
+};
 const Libarary = () => {
   const { queryLibrary, navTitle, setNavTitle, upload, queryStatus, delVideo } = useContext(queryContext);
   const isMobile = !useMediaQuery("(min-width:1000px)");
@@ -33,23 +35,21 @@ const Libarary = () => {
     },
     container: {
       width: '100%',
-      columnCount: 6,
-      columnGap: '3px',
       position: 'relative',
     },
-    noResContainer: {
-      width: '17%',
-    },
     imgWrapper: {
-      width: '100%',
+      width: '16.5%',
+      border: 'solid 1px transparent',
       minHeight: '40px',
       display: 'block',
       position: 'relative',
-      border: 'solid 1px transparent',
     },
     cover: {
       position: 'absolute',
-      top: 0, right: 0, width: `${100 - loadingPercent}%`, height: '100%',
+      top: 0,
+      right: 0,
+      width: `${100 - loadingPercent}%`,
+      height: 'calc(100% - 2px)',
       backgroundColor: 'rgba(79,196,249,0.5)',
     },
     percent: {
@@ -67,8 +67,7 @@ const Libarary = () => {
       cursor: 'pointer'
     },
     addWrapper: {
-      width: "100%",
-      marginBottom: results.length ? '3px' : '20px',
+      width: "16.5%",
       height: '15vh',
       background: 'rgba(255,255,255,0.1)',
       display: "flex",
@@ -111,39 +110,44 @@ const Libarary = () => {
     }
   }
 
+  const isFirstRun = useRef(true);
   useEffect(() => {
     isSubscription.current = true;
     const query = async () => {
       if (timeout.current) {
         clearTimeout(timeout.current);
       }
+      setNavTitle(`Fetching New Data...`)
       timeout.current = setTimeout(() => {
-        setNavTitle(`Fetching Data...`)
         queryLibrary({ page }).then(res => {
           if (res && res.status === 200 && isSubscription.current) {
             const { Data, Total } = res.data;
             if (Total === 0) {
               isKeepQuery.current = false;
             }
+            if (isFirstRun.current) {
+              isFirstRun.current = false;
+              TotalContainer.current = Total;
+            }
             setResults(results => [...results, ...Data])
-            TotalContainer.current = Total + TotalContainer.current;
             setNavTitle(`${TotalContainer.current} VIDEOS IN LIBRARY`)
           }
         })
-      }, 400)
+      }, 200)
     }
     if (isKeepQuery.current) {
       query()
     }
     return () => {
       isSubscription.current = false;
+      timeout.current && clearTimeout(timeout.current)
     }
     //eslint-disable-next-line
   }, [page])
-
   // bind drag and drop event
   useEffect(() => {
     isSubscription.current = true;
+    let timeout;
     const _upload = async e => {
       const files = [...e.dataTransfer.files].filter(item => regex.test(item.name));
       if (files && files.length > 0 && isSubscription.current) {
@@ -171,9 +175,11 @@ const Libarary = () => {
       const clientHeight = document.getElementById('content').clientHeight;
       const scrollHeight = document.getElementById('content').scrollHeight;
       const scrollTop = document.getElementById('content').scrollTop;
-      //TODO: why scrollHeight would be larger than clientHeight + scrollTop ?
       if (scrollHeight === clientHeight + scrollTop) {
-        setPage(page + 1);
+        timeout && clearTimeout(timeout);
+        timeout = setTimeout(() => {
+          setPage(page + 1);
+        }, 50)
       }
     };
     window.addEventListener("scroll", _fetch);
@@ -246,73 +252,48 @@ const Libarary = () => {
 
   return (
     <div className={classes.root} ref={Root}>
-      <div className={results.length ? classes.container : classes.noResContainer}>
-        {
-          navTitle === 'UPLOADING...'
-            ? (
-              <div className={classes.imgWrapper} >
-                <GifPlayer gif={GifUploading.current} autoplay />
-                {loadingPercent < 100 && (
-                  <>
-                    <div className={classes.cover} />
-                    <div className={classes.percent}>{`${loadingPercent}%`}</div>
-                  </>
-                )}
-              </div>
-            ) : (
-              <FileDrop>
+      <div className={classes.container}>
+        <Masonry
+          className={''} // default ''
+          elementType={'div'} // default 'div'
+          options={masonryOptions} // default {}
+          disableImagesLoaded={false} // default false
+          updateOnEachImageLoad={false} // default false and works only if disableImagesLoaded is false
+          imagesLoadedOptions={{}} // default {}
+        >
+          {
+            navTitle === 'UPLOADING...'
+              ? (
+                <div className={classes.imgWrapper} >
+                  <GifPlayer gif={GifUploading.current} autoplay />
+                  {loadingPercent < 100 && (
+                    <>
+                      <div className={classes.cover} />
+                      <div className={classes.percent}>{`${loadingPercent}%`}</div>
+                    </>
+                  )}
+                </div>
+              ) : (
                 <div className={classes.addWrapper} ref={uploader} onClick={() => clickUpload()} >
                   <AddIcon />
                   <input type="file" style={{ display: 'none' }} ref={FileUploader} multiple />
                 </div>
-              </FileDrop>
-            )
-        }
-        {results.length === 0 ?
-          (
-            <div style={{
-              fontFamily: `Roboto-Regular,Roboto`,
-              fontWeight: 400,
-              color: `rgba(250,250,250,1)`,
-              minWidth: '400px'
-            }}>
-              <div style={{
-                display: `flex`,
-                justifyContent: 'start',
-                alignItems: 'center'
-              }}>
-                <p>Drop or click</p>&nbsp;
-                <AddIcon />&nbsp;
-                <p>to upload videos to the library</p>
+              )
+          }
+          {results.map((data) => {
+            const isSelected = data.name === selectedID;
+            return (
+              <div className={`${classes.imgWrapper} ${isSelected ? classes.selected : ""}`}
+                key={data.name}
+                onMouseOver={() => { onMouseOver(data.name); }}
+                onMouseLeave={() => { onMouseLeave(data.name); }}
+              >
+                <GifPlayer gif={data.data} autoplay />
+                {isSelected && <div style={{ position: 'absolute', top: 0, right: 0 }}><DeleteIcon classes={{ root: classes.delete }} onClick={() => deleteGif(data.name)} /></div>}
               </div>
-            </div>
-          ) : (
-            <>
-              <FlipMove duration={500}>
-                {results.map((data) => {
-                  const isSelected = data.name === selectedID;
-                  return (
-                    <div className={`${classes.imgWrapper} ${isSelected ? classes.selected : ""}`}
-                      key={data.name}
-                      onMouseOver={() => { onMouseOver(data.name); }}
-                      onMouseLeave={() => { onMouseLeave(data.name); }}
-                    >
-                      <GifPlayer gif={data.data} autoplay />
-                      {isSelected && <div style={{ position: 'absolute', top: 0, right: 0 }}><DeleteIcon classes={{ root: classes.delete }} onClick={() => deleteGif(data.name)} /></div>}
-                    </div>
-                  )
-                })}
-              </FlipMove>
-              {results.length < 6 && (
-                <>
-                  {[1, 2, 3, 4, 5, 6, 7, 8].map((i, index) => {
-                    return <div key={`key${index}`} className={classes.imgWrapper} style={{ visibility: 'hidden', height: '300px' }}></div>
-                  })}
-                </>
-              )}
-            </>
-          )}
-
+            )
+          })}
+        </Masonry>
       </div>
     </div>)
 };
