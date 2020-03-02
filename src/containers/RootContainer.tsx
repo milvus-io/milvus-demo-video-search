@@ -24,6 +24,7 @@ const RootContainer: React.FC = () => {
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
+      height: '50px',
       backgroundColor: "#1F2023",
       color: '#fff',
       paddingBottom: '5px',
@@ -87,7 +88,7 @@ const RootContainer: React.FC = () => {
           justifyContent: 'space-between',
           alignItems: 'center',
           padding: '0 20px'
-        }}><h3 style={{marginRight:'10px'}}>Video Search</h3><p> Powered By Milvus</p></div>
+        }}><h3 style={{ marginRight: '10px' }}>Video Search</h3><p> Powered By Milvus</p></div>
         <h3 className={classes.title}>{navTitle}</h3>
         <div className={classes.pageSwitcher} onClick={() => { setPage(page === 'search' ? 'library' : 'search'); page === 'search' && setNavTitle('VIDEO SEARCH'); }}>
           <div className={page === 'search' ? classes.selectedWrapper : classes.noneSelectedWrapper}><SearchIcon style={{ fontSize: '1rem' }} /></div>

@@ -103,7 +103,7 @@ const Results = props => {
                   <div className={clsx(classes.imgWrapper, index === 0 ? 'best' : '')} key={data.name}>
                     <GifPlayer gif={data.data} autoplay />
                     <div className={classes.info}>
-                      <p>{data.distance.toFixed(5)}</p>
+                      <p>{(data.distance || 1.001).toFixed(5)}</p>
                     </div>
                   </div>
                 )
