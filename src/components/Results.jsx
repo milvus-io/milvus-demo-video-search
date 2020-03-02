@@ -51,17 +51,21 @@ const Results = props => {
   const classes = useStyles({});
 
   useEffect(() => {
+    let timeout;
     const _setPart = results => {
       setResults([...results.splice(5)])
-      setTimeout(() => {
+      timeout = setTimeout(() => {
         if (results.length > 5) {
-          _setPart(results)
+          _setPart(curr => [...curr, ...results])
         } else {
           setResults(curr => [...curr, ...results])
         }
-      }, 1000)
+      }, 200)
     }
     _setPart(results)
+    return () => {
+      timeout && clearTimeout(timeout)
+    }
   }, [results])
   return (
     <div className={classes.root}>

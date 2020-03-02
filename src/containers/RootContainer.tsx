@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { queryContext } from "../contexts/QueryContext";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
-import Logo from "../logo-white.svg";
+// import Logo from "../logo-white.svg";
 import SearchIcon from "@material-ui/icons/Search"
 import SettingsIcon from "@material-ui/icons/Settings"
 import Library from "../components/Library"
@@ -81,13 +81,19 @@ const RootContainer: React.FC = () => {
   return (
     <div className={classes.root}>
       <div className={classes.nav}>
-        <img className={classes.logo} src={Logo} width="150px" alt="logo" />
+        {/* <img className={classes.logo} src={Logo} width="150px" alt="logo" /> */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: '0 20px'
+        }}><h3 style={{marginRight:'10px'}}>Video Search</h3><p> Powered By Milvus</p></div>
         <h3 className={classes.title}>{navTitle}</h3>
         <div className={classes.pageSwitcher} onClick={() => { setPage(page === 'search' ? 'library' : 'search'); page === 'search' && setNavTitle('VIDEO SEARCH'); }}>
           <div className={page === 'search' ? classes.selectedWrapper : classes.noneSelectedWrapper}><SearchIcon style={{ fontSize: '1rem' }} /></div>
           <div className={page === 'library' ? classes.selectedWrapper : classes.noneSelectedWrapper}><SettingsIcon style={{ fontSize: '1rem' }} /></div>
         </div>
-        <div className={classes.note}>POWERED BY</div>
+        {/* <div className={classes.note}>POWERED BY</div> */}
       </div>
       <div className={classes.content} id='content'>
         <SwitchTransition mode='out-in'>

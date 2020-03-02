@@ -67,8 +67,17 @@ const Setting = (props) => {
     setSearchParams(searchParams => ({ ...searchParams, curr }))
   }
   const delHistory = (id) => {
+    let curr = searchParams.curr;
+    const index = searchParams.history.indexOf(curr);
+    if (searchParams.curr.id === id) {
+      curr = searchParams.history[index + 1] || searchParams.history[index - 1] || {
+        file: "",
+        data: "",
+        id: ""
+      }
+    }
     const arr = searchParams.history.filter((t) => t.id !== id)
-    setSearchParams(searchParams => ({ ...searchParams, history: arr }))
+    setSearchParams({ curr, history: arr })
   }
   const _search = async (imgSrc) => {
     setNavTitle('SEARCHING...');
@@ -145,7 +154,7 @@ const Setting = (props) => {
           return (
             <div key={index} className={clsx(classes.imageWrapper, isSelected ? classes.selectedImage : "")} onClick={() => changeImg(item)} onMouseEnter={() => setDeleteID(item.id)} onMouseLeave={() => { item.id === deleteID && setDeleteID("") }}>
               <img style={{ width: '100%' }} src={item.data} alt="" />
-              {isDelete && <div style={{ position: 'absolute', top: 0, right: 0 }}><DeleteIcon classes={{ root: classes.delete }} onClick={() => { delHistory(item.id); return false; }} /></div>}
+              {isDelete && <div style={{ position: 'absolute', top: 0, right: 0 }}><DeleteIcon classes={{ root: classes.delete }} onClick={(e) => { e.stopPropagation(); delHistory(item.id); return false; }} /></div>}
             </div>
           )
         })

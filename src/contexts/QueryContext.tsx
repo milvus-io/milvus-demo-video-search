@@ -24,7 +24,7 @@ const QueryProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const classes = useStyles();
   // current page : search | library
   const [page, setPage] = useState<string>('search');
-  const [navTitle, setNavTitle]: any = useState('VIDEO SEARCH')
+  const [navTitle, setNavTitle]: any = useState('Waiting For Search')
   // page status : upload-img | search | show-search | upload-library| show-library | fail-library
   const [pageStatus, setPageStatus] = useState<string>('show-search');
   // note status 

@@ -117,8 +117,8 @@ const Libarary = () => {
       if (timeout.current) {
         clearTimeout(timeout.current);
       }
-      setNavTitle(`Fetching New Data...`)
       timeout.current = setTimeout(() => {
+        setNavTitle(`Fetching New Data...`)
         queryLibrary({ page }).then(res => {
           if (res && res.status === 200 && isSubscription.current) {
             const { Data, Total } = res.data;
@@ -133,7 +133,7 @@ const Libarary = () => {
             setNavTitle(`${TotalContainer.current} VIDEOS IN LIBRARY`)
           }
         })
-      }, 200)
+      }, 100)
     }
     if (isKeepQuery.current) {
       query()
@@ -193,6 +193,7 @@ const Libarary = () => {
       window.removeEventListener("scroll", _fetch);
       window.removeEventListener("mousewheel", _fetch);
       isSubscription.current = false;
+      timeout && clearTimeout(timeout);
     }
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [results, setResults])
