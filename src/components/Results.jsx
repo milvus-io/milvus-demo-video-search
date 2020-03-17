@@ -11,6 +11,7 @@ var GifPlayer = require('react-gif-player')
 const masonryOptions = {
   transitionDuration: 500
 };
+const group_size = 2;
 const Results = props => {
   const { results } = props;
   const [renderResults, setResults] = useState([])
@@ -48,17 +49,25 @@ const Results = props => {
       textShadow: `black 0.1em 0.1em 0.2em`
     }
   });
-  const indexRef = useRef(0)
+  const render_nums_ref = useRef(0)
+  const render_group_size_ref = useRef(group_size)
   const classes = useStyles({});
   const _loadNewImages = () => {
-    if (indexRef.current < results.length && indexRef.current % 5 === 0) {
-      setResults(results.slice(indexRef.current + 5))
+    if (render_nums_ref.current === 0) {
+      setResults(results.slice(0, render_nums_ref.current + group_size))
+      return;
+    }
+    // console.info(render_nums_ref.current, results.length, render_nums_ref.current, render_group_size_ref.current)
+    if (render_nums_ref.current < results.length && render_nums_ref.current % render_group_size_ref.current === 0) {
+      render_group_size_ref.current += group_size
+      setResults(results.slice(0, render_nums_ref.current + group_size))
     }
   }
-
   useEffect(() => {
-    indexRef.current = 0;
+    render_nums_ref.current = 0;
+    render_group_size_ref.current = group_size;
     _loadNewImages();
+    // eslint-disable-next-line 
   }, [results])
   return (
     <div className={classes.root}>
@@ -94,7 +103,11 @@ const Results = props => {
               {renderResults.map((data, index) => {
                 return (
                   <div className={clsx(classes.imgWrapper, index === 0 ? 'best' : '')} key={data.name}>
-                    <GifPlayer gif={data.data} autoplay onLoad={() => { indexRef.current += 1; _loadNewImages() }} />
+                    <GifPlayer
+                      gif={data.data}
+                      autoplay
+                      onLoad={() => { render_nums_ref.current += 1; _loadNewImages() }}
+                    />
                     <div className={classes.info}>
                       <p>{(data.distance || 1.001).toFixed(5)}</p>
                     </div>
