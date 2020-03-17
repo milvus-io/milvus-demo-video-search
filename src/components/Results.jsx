@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import SettingsIcon from "@material-ui/icons/Settings"
 import clsx from 'clsx';
 import { makeStyles } from "@material-ui/core/styles";
@@ -48,24 +48,17 @@ const Results = props => {
       textShadow: `black 0.1em 0.1em 0.2em`
     }
   });
+  const indexRef = useRef(0)
   const classes = useStyles({});
+  const _loadNewImages = () => {
+    if (indexRef.current < results.length && indexRef.current % 5 === 0) {
+      setResults(results.slice(indexRef.current + 5))
+    }
+  }
 
   useEffect(() => {
-    let timeout;
-    const _setPart = results => {
-      setResults([...results.splice(5)])
-      timeout = setTimeout(() => {
-        if (results.length > 5) {
-          _setPart(curr => [...curr, ...results])
-        } else {
-          setResults(curr => [...curr, ...results])
-        }
-      }, 200)
-    }
-    _setPart(results)
-    return () => {
-      timeout && clearTimeout(timeout)
-    }
+    indexRef.current = 0;
+    _loadNewImages();
   }, [results])
   return (
     <div className={classes.root}>
@@ -101,7 +94,7 @@ const Results = props => {
               {renderResults.map((data, index) => {
                 return (
                   <div className={clsx(classes.imgWrapper, index === 0 ? 'best' : '')} key={data.name}>
-                    <GifPlayer gif={data.data} autoplay />
+                    <GifPlayer gif={data.data} autoplay onLoad={() => { indexRef.current += 1; _loadNewImages() }} />
                     <div className={classes.info}>
                       <p>{(data.distance || 1.001).toFixed(5)}</p>
                     </div>
