@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import SettingsIcon from "@material-ui/icons/Settings"
 import clsx from 'clsx';
 import { makeStyles } from "@material-ui/core/styles";
@@ -51,9 +51,8 @@ const Results = props => {
   });
   const render_nums_ref = useRef(0)
   const render_group_size_ref = useRef(group_size)
-  const is_stop_query = useRef(false)
   const classes = useStyles({});
-  const _loadNewImages = () => {
+  const _loadNewImages = useCallback(() => {
     if (render_nums_ref.current === 0) {
       setResults(results.slice(0, render_nums_ref.current + group_size))
       return;
@@ -62,15 +61,12 @@ const Results = props => {
       render_group_size_ref.current += group_size
       setResults(results.slice(0, render_nums_ref.current + group_size))
     }
-  }
+  }, [results])
   useEffect(() => {
-    is_stop_query.current = false;
+    setResults([])
     render_nums_ref.current = 0;
     render_group_size_ref.current = group_size;
     _loadNewImages();
-    return () => {
-      is_stop_query.current = true;
-    }
     // eslint-disable-next-line 
   }, [results])
   return (
@@ -110,7 +106,7 @@ const Results = props => {
                     <GifPlayer
                       gif={data.data}
                       autoplay
-                      onLoad={() => { if (!is_stop_query.current) { render_nums_ref.current += 1; _loadNewImages() } }}
+                      onLoad={() => { render_nums_ref.current += 1; _loadNewImages() }}
                     />
                     <div className={classes.info}>
                       <p>{(data.distance || 1.001).toFixed(5)}</p>
