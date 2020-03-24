@@ -23,64 +23,66 @@ const useStyles = makeStyles({
 const QueryProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const classes = useStyles();
   // current page : search | library
-  const [page, setPage] = useState<string>('search');
-  const [navTitle, setNavTitle]: any = useState('Waiting For Search')
+  const [page, setPage] = useState<string>("search");
+  const [navTitle, setNavTitle]: any = useState("Waiting For Search");
   // page status : upload-img | search | show-search | upload-library| show-library | fail-library
-  const [pageStatus, setPageStatus] = useState<string>('show-search');
-  // note status 
-  const [noteStatus, setNoteStatus] = useState<any>({ show: false, content: '' })
+  const [pageStatus, setPageStatus] = useState<string>("show-search");
+  // note status
+  const [noteStatus, setNoteStatus] = useState<any>({
+    show: false,
+    content: ""
+  });
   // searchParams
   const [searchParams, setSearchParams]: any = useState({
-    history: [
-    ],
+    history: [],
     curr: {
       file: "",
       data: "",
       id: ""
     }
-  })
+  });
   const showNote = (content: string) => {
     setNoteStatus({ show: true, content });
   };
 
-  const hideNote = () => setNoteStatus({ show: false, content: '' });
+  const hideNote = () => setNoteStatus({ show: false, content: "" });
 
   const errorParser = (e: any) => {
     console.log(e);
   };
   const search = async (params: any) => {
     const url = URL.SEARCH;
-    const bodyFormData = new FormData()
-    bodyFormData.set('file', params);
-    bodyFormData.set('Num', '50');
+    const bodyFormData = new FormData();
+    bodyFormData.set("file", params);
+    bodyFormData.set("Num", "50");
     return await axiosInstance.post(url, bodyFormData).catch(errorParser);
   };
   const upload = async (params: any) => {
     const url = URL.VIDEO;
     var formData = new FormData();
-    formData.set('file', params);
+    formData.set("file", params);
     return await axiosInstance.post(url, formData).catch(errorParser);
-  }
+  };
   const queryStatus = async (params: any) => {
     const url = URL.QUERY_STATUS;
-    var bodyFormData = new FormData()
-    bodyFormData.set('ID', params);
+    var bodyFormData = new FormData();
+    bodyFormData.set("ID", params);
     return await axiosInstance.post(url, bodyFormData).catch(errorParser);
-  }
+  };
   const queryLibrary = async (params: any) => {
     const url = URL.VIDEO;
     params = {
-      "Reverse": true,
-      "PageNum": params.page,
-      "PerPageCount": 50
-    }
+      Reverse: true,
+      PageNum: params.page,
+      PerPageCount: 30
+    };
     return await axiosInstance.get(url, { params }).catch(errorParser);
-  }
+  };
   const delVideo = async (_params: any) => {
     const url = URL.VIDEO;
-    const params = { ID: _params }
+    const params = { ID: _params };
     return await axiosInstance.delete(url, { params }).catch(errorParser);
-  }
+  };
   return (
     <Provider
       value={{
@@ -96,13 +98,15 @@ const QueryProvider: FC<{ children: ReactNode }> = ({ children }) => {
         showNote,
         hideNote,
         // pages
-        page, setPage,
-        pageStatus, setPageStatus,
+        page,
+        setPage,
+        pageStatus,
+        setPageStatus,
         noteStatus,
         setNoteStatus,
 
         searchParams,
-        setSearchParams,
+        setSearchParams
       }}
     >
       {children}

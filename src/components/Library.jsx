@@ -5,11 +5,11 @@ import { queryContext } from "../contexts/QueryContext";
 import { makeStyles } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import AddIcon from "@material-ui/icons/Add";
-import DeleteIcon from "@material-ui/icons/Delete";
+// import DeleteIcon from "@material-ui/icons/Delete";
 var GifPlayer = require("react-gif-player");
 
 const _calPercent = ({ percent, state }) => {
-  return (state === "predict"
+  return (state !== "predict"
     ? (percent * 100) / 2
     : 50 + (percent * 100) / 2
   ).toFixed(2);
@@ -22,18 +22,19 @@ const masonryOptions = {
   resize: true
 };
 
+const group_size = 2;
 const Libarary = () => {
   const {
     queryLibrary,
     navTitle,
     setNavTitle,
     upload,
-    queryStatus,
-    delVideo
+    queryStatus
+    // delVideo
   } = useContext(queryContext);
   const isMobile = !useMediaQuery("(min-width:1000px)");
   const [results, setResults] = useState([]);
-  const [selectedID, setSelectedID] = useState("");
+  // const [selectedID, setSelectedID] = useState("");
   const [loadingPercent, setLoadingPercent] = useState(0);
   const [uploadQueue, setUploadQueue] = useState([]);
   const [page, setPage] = useState(0);
@@ -102,18 +103,20 @@ const Libarary = () => {
   const isSubscription = useRef(true);
   const should_query = useRef(true);
   const Root = useRef(null);
+  const cdd_results = useRef([]);
+  const render_num = useRef(0);
 
-  const onMouseOver = id => setSelectedID(id);
-  const onMouseLeave = id => selectedID === id && setSelectedID("");
-  const deleteGif = name => {
-    setResults(results.filter(result => result.name !== name));
-    delVideo(name).then(res => {
-      if (res && res.status === 200 && isSubscription.current) {
-        TotalContainer.current = TotalContainer.current - 1;
-        setNavTitle(`${TotalContainer.current} VIDEOS IN LIBRARY`);
-      }
-    });
-  };
+  // const onMouseOver = id => setSelectedID(id);
+  // const onMouseLeave = id => selectedID === id && setSelectedID("");
+  // const deleteGif = name => {
+  //   setResults(results => results.filter(result => result.name !== name));
+  //   delVideo(name).then(res => {
+  //     if (res && res.status === 200 && isSubscription.current) {
+  //       TotalContainer.current = TotalContainer.current - 1;
+  //       setNavTitle(`${TotalContainer.current} VIDEOS IN LIBRARY`);
+  //     }
+  //   });
+  // };
   const clickUpload = () => {
     if (FileUploader.current) {
       FileUploader.current.onchange = e => {
@@ -121,6 +124,16 @@ const Libarary = () => {
         setUploadQueue(files);
       };
       FileUploader.current.click();
+    }
+  };
+
+  const _loadResults = () => {
+    if (
+      cdd_results.current.length > 0 &&
+      render_num.current % group_size === 0
+    ) {
+      const cdds = cdd_results.current.splice(0, group_size);
+      setResults(results => [...results, ...cdds]);
     }
   };
 
@@ -140,13 +153,15 @@ const Libarary = () => {
             isFirstRun.current = false;
             TotalContainer.current = Total;
           }
-          setResults(results => [...results, ...Data]);
+          cdd_results.current = Data;
+          render_num.current = 0;
+          _loadResults();
           setNavTitle(`${TotalContainer.current} VIDEOS IN LIBRARY`);
           should_query.current = true;
         }
       });
     };
-    if (should_query.current) {
+    if (should_query.current && cdd_results.current.length === 0) {
       query();
     }
     return () => {
@@ -288,16 +303,12 @@ const Libarary = () => {
     <div className={classes.root} ref={Root}>
       <div className={classes.container}>
         <Masonry
+          enableResizableChildren={true}
           className={""} // default ''
           elementType={"div"} // default 'div'
           options={masonryOptions} // default {}
-          disableImagesLoaded={false} // default false
-          updateOnEachImageLoad={false} // default false and works only if disableImagesLoaded is false
+          updateOnEachImageLoad={true} // default false and works only if disableImagesLoaded is false
           imagesLoadedOptions={{}} // default {}
-          // onRemoveComplete={removedItems => {
-          //   console.info(removedItems);
-          //   removedItems.hide();
-          // }}
         >
           {navTitle === "UPLOADING..." ? (
             <div className={classes.imgWrapper}>
@@ -325,29 +336,37 @@ const Libarary = () => {
             </div>
           )}
           {results.map(data => {
-            const isSelected = data.name === selectedID;
+            // const isSelected = data.name === selectedID;
             return (
               <div
                 className={`${classes.imgWrapper} ${
-                  isSelected ? classes.selected : ""
+                  ""
+                  // isSelected ? classes.selected : ""
                 }`}
                 key={data.name}
-                onMouseOver={() => {
-                  onMouseOver(data.name);
-                }}
-                onMouseLeave={() => {
-                  onMouseLeave(data.name);
-                }}
+                // onMouseOver={() => {
+                //   onMouseOver(data.name);
+                // }}
+                // onMouseLeave={() => {
+                //   onMouseLeave(data.name);
+                // }}
               >
-                <GifPlayer gif={data.data} autoplay />
-                {isSelected && (
+                <GifPlayer
+                  gif={data.data}
+                  autoplay
+                  onLoad={() => {
+                    render_num.current += 1;
+                    _loadResults();
+                  }}
+                />
+                {/* {isSelected && (
                   <div style={{ position: "absolute", top: 0, right: 0 }}>
                     <DeleteIcon
                       classes={{ root: classes.delete }}
                       onClick={() => deleteGif(data.name)}
                     />
                   </div>
-                )}
+                )} */}
               </div>
             );
           })}
